@@ -1,0 +1,1854 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Portal de Indicadores ABIHPEC — acesso centralizado aos relatórios do Power BI." />
+    <title>Portal de Indicadores | ABIHPEC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+:root {
+  --bg: oklch(1 0 0);
+  --surface: oklch(0.975 0.008 250);
+  --surface-strong: oklch(0.945 0.015 250);
+  --ink: oklch(0.245 0.045 252);
+  --muted: oklch(0.47 0.035 252);
+  --line: oklch(0.88 0.018 250);
+  --primary: oklch(0.39 0.13 252);
+  --primary-strong: oklch(0.30 0.105 252);
+  --primary-pale: oklch(0.94 0.035 252);
+  --accent: oklch(0.653 0.185 33.5);
+  --success: oklch(0.50 0.13 155);
+  --error: oklch(0.48 0.18 27);
+  --error-pale: oklch(0.96 0.025 27);
+
+  --header-h: 76px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --focus: 0 0 0 3px var(--bg), 0 0 0 5px var(--primary);
+  --font: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.has-reports {
+  background: var(--surface);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+/* ---------- Ícones ---------- */
+.icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+/* ---------- Skip link ---------- */
+.skip-link {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-strong);
+  color: var(--bg);
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.btn-primary:hover {
+  background: var(--primary-strong);
+}
+
+.btn-secondary {
+  background: var(--bg);
+  border-color: var(--line);
+  color: var(--primary-strong);
+}
+
+.btn-secondary:hover {
+  background: var(--surface);
+  border-color: oklch(0.8 0.03 250);
+}
+
+.btn-danger {
+  background: var(--error-pale);
+  border-color: oklch(0.9 0.05 27);
+  color: var(--error);
+}
+
+.btn-danger:hover {
+  background: oklch(0.93 0.045 27);
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: var(--surface);
+}
+
+/* ---------- Cabeçalho ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: var(--header-h);
+  padding: 0 clamp(16px, 4vw, 40px);
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--primary);
+}
+
+.brand-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--line);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.brand-subtitle {
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+/* ---------- Tela inicial ---------- */
+.empty-state {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 72px);
+  max-width: 1320px;
+  min-height: calc(100vh - var(--header-h));
+  margin: 0 auto;
+  padding: clamp(40px, 6vw, 80px) clamp(16px, 4vw, 40px);
+  overflow: hidden;
+}
+
+.empty-content {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow-line {
+  display: block;
+  width: 44px;
+  height: 3px;
+  margin-bottom: 18px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--primary);
+}
+
+.eyebrow-small {
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+}
+
+.empty-title {
+  margin-top: 18px;
+  font-size: clamp(44px, 4.6vw, 78px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: var(--primary-strong);
+}
+
+.empty-title span {
+  display: block;
+  white-space: nowrap;
+}
+
+.empty-text {
+  max-width: 480px;
+  margin-top: 26px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ---------- Ilustração ---------- */
+.illustration-wrap {
+  position: relative;
+  perspective: 1600px;
+}
+
+.illustration-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -18% -14%;
+  z-index: 0;
+  background: radial-gradient(closest-side, oklch(0.9 0.06 252 / 0.55), oklch(1 0 0 / 0));
+  pointer-events: none;
+}
+
+.illustration {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--bg);
+  box-shadow: 0 30px 70px -24px oklch(0.3 0.08 252 / 0.28), 0 8px 22px -12px oklch(0.3 0.08 252 / 0.16);
+  transform: rotateY(-6deg) rotateX(2deg);
+  transform-origin: center;
+}
+
+.ill-topbar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--primary-strong);
+}
+
+.ill-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: oklch(1 0 0 / 0.35);
+}
+
+.ill-topbar-title {
+  width: 120px;
+  height: 8px;
+  margin-left: 14px;
+  border-radius: 4px;
+  background: oklch(1 0 0 / 0.22);
+}
+
+.ill-body {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  min-height: 330px;
+}
+
+.ill-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding-top: 20px;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+}
+
+.ill-side-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+}
+
+.ill-side-icon.is-active {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.ill-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  min-width: 0;
+}
+
+.ill-title-bar {
+  width: 42%;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--primary);
+}
+
+.ill-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ill-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.ill-metric strong {
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--primary-strong);
+}
+
+.ill-metric span {
+  width: 70%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-strong);
+}
+
+.ill-charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 12px;
+  flex: 1;
+}
+
+.ill-bars,
+.ill-donut-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.ill-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 150px;
+  padding: 16px 16px 14px;
+}
+
+.ill-bars span {
+  flex: 1;
+  height: var(--h);
+  border-radius: 4px 4px 2px 2px;
+  background: var(--primary);
+}
+
+.ill-bars span.is-accent {
+  background: var(--accent);
+}
+
+.ill-donut-card {
+  display: grid;
+  place-items: center;
+  padding: 14px;
+}
+
+.ill-donut {
+  width: min(100%, 118px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--primary) 0 52%,
+    var(--accent) 52% 78%,
+    var(--surface-strong) 78% 100%
+  );
+  -webkit-mask: radial-gradient(circle, transparent 47%, #000 48%);
+  mask: radial-gradient(circle, transparent 47%, #000 48%);
+}
+
+/* ---------- Tela com relatórios ---------- */
+.tabs-bar {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 clamp(16px, 4vw, 40px);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
+.tab {
+  position: relative;
+  flex: none;
+  max-width: 260px;
+  padding: 15px 16px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.tab::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--primary-strong);
+}
+
+.tab[aria-selected='true']::after {
+  background: var(--accent);
+}
+
+.tab:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--primary);
+  border-radius: var(--radius-sm);
+}
+
+.report-area {
+  padding: 22px clamp(16px, 4vw, 40px) 32px;
+}
+
+.report-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.report-heading {
+  min-width: 0;
+}
+
+.report-name {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--primary-strong);
+  overflow-wrap: anywhere;
+}
+
+.report-frame {
+  position: relative;
+  height: calc(100vh - 190px);
+  min-height: 520px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  box-shadow: 0 18px 46px -26px oklch(0.3 0.08 252 / 0.3);
+}
+
+.report-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  transition: opacity 0.2s ease;
+}
+
+.report-frame iframe.is-loading {
+  opacity: 0;
+}
+
+/* ---------- Skeleton ---------- */
+.skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px;
+  background: var(--bg);
+}
+
+.skeleton span {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+}
+
+.skeleton span::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.65), transparent);
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.sk-line {
+  width: min(320px, 60%);
+  height: 18px;
+}
+
+.sk-block {
+  flex: 1;
+  width: 100%;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ---------- Painel lateral ---------- */
+.side-panel {
+  width: min(540px, 100%);
+  max-width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  margin: 0 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: -24px 0 60px -20px oklch(0.25 0.06 252 / 0.3);
+}
+
+.side-panel[open] {
+  animation: panel-in 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.side-panel.is-closing {
+  animation: panel-out 0.18s ease-in forwards;
+}
+
+.side-panel::backdrop {
+  background: oklch(0.2 0.04 252 / 0.42);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.side-panel[open]::backdrop {
+  animation: fade-in 0.24s ease;
+}
+
+.side-panel.is-closing::backdrop {
+  animation: fade-out 0.18s ease forwards;
+}
+
+@keyframes panel-in {
+  from {
+    transform: translateX(32px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes panel-out {
+  to {
+    transform: translateX(32px);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.panel-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px 28px 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-title {
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--primary-strong);
+}
+
+.panel-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 26px 28px;
+  overflow-y: auto;
+}
+
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  gap: 14px;
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.step-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.step-text {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-wrap:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-pale);
+}
+
+.input-wrap:has(input[aria-invalid='true']) {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px var(--error-pale);
+}
+
+.input-icon {
+  margin-left: 14px;
+  color: var(--muted);
+}
+
+.input-wrap input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  font-size: 15px;
+}
+
+.input-wrap input:focus,
+.input-wrap input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.input-plain input {
+  padding: 0 14px;
+}
+
+.input-wrap input::placeholder {
+  color: oklch(0.6 0.025 252);
+}
+
+.paste-btn {
+  flex: none;
+  margin-right: 6px;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--primary-pale);
+  color: var(--primary-strong);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.paste-btn:hover {
+  background: oklch(0.9 0.05 252);
+}
+
+.field-help {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.field-error {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--error);
+}
+
+.field-error:empty {
+  display: none;
+}
+
+.info-box {
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid oklch(0.88 0.04 252);
+  border-radius: var(--radius-md);
+  background: var(--primary-pale);
+  color: var(--primary-strong);
+}
+
+.info-box .icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+}
+
+.info-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.info-text {
+  margin-top: 3px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--primary-strong);
+}
+
+.panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 28px;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.panel-footer-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 200;
+  max-width: min(380px, calc(100vw - 32px));
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background: var(--primary-strong);
+  color: var(--bg);
+  font-size: 14.5px;
+  font-weight: 500;
+  box-shadow: 0 14px 34px -14px oklch(0.2 0.06 252 / 0.5);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.toast:empty {
+  padding: 0;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Responsividade ---------- */
+@media (max-width: 960px) {
+  .empty-state {
+    grid-template-columns: minmax(0, 1fr);
+    text-align: center;
+    min-height: auto;
+  }
+
+  .eyebrow-line {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .empty-title span {
+    white-space: normal;
+  }
+
+  .empty-text {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .illustration-wrap {
+    width: min(100%, 640px);
+    margin: 0 auto;
+    perspective: none;
+  }
+
+  .illustration {
+    transform: none;
+  }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --header-h: 68px;
+  }
+
+  .brand-divider,
+  .brand-subtitle {
+    display: none;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-name {
+    font-size: 20px;
+  }
+
+  .brand-title {
+    font-size: 14px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-btn {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
+
+  .header-btn .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .header-btn .btn-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .empty-state {
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .empty-title {
+    font-size: clamp(38px, 11vw, 52px);
+  }
+
+  .empty-text {
+    font-size: 16.5px;
+  }
+
+  .illustration-wrap {
+    width: 100%;
+  }
+
+  .ill-body {
+    grid-template-columns: 42px minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .ill-side-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ill-main {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .ill-metrics {
+    gap: 8px;
+  }
+
+  .ill-metric {
+    padding: 10px;
+  }
+
+  .ill-charts {
+    gap: 8px;
+  }
+
+  .ill-bars {
+    min-height: 110px;
+    gap: 5px;
+    padding: 12px 10px 10px;
+  }
+
+  .ill-donut-card {
+    padding: 10px;
+  }
+
+  .report-toolbar {
+    align-items: center;
+  }
+
+  .report-name {
+    font-size: 19px;
+  }
+
+  .report-frame {
+    min-height: 460px;
+  }
+
+  .side-panel {
+    width: 100%;
+    border-left: 0;
+  }
+
+  .panel-header,
+  .panel-body,
+  .panel-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .panel-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .panel-footer-actions {
+    margin-left: 0;
+  }
+
+  .panel-footer-actions .btn {
+    flex: 1;
+  }
+
+  .panel-footer .btn {
+    width: 100%;
+    padding: 0 12px;
+  }
+
+  .panel-footer-actions .btn {
+    width: auto;
+  }
+
+  .toast {
+    right: 16px;
+    left: 16px;
+    bottom: 16px;
+    max-width: none;
+  }
+}
+
+/* ---------- Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .illustration {
+    transform: none;
+  }
+
+  .skeleton span::after {
+    display: none;
+  }
+
+  .toast {
+    transform: none;
+  }
+}
+
+</style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Ir para o conteúdo principal</a>
+
+    <header class="site-header">
+      <div class="brand">
+        <span class="brand-name">ABIHPEC</span>
+        <span class="brand-divider" aria-hidden="true"></span>
+        <span class="brand-text">
+          <span class="brand-title">Portal de Indicadores</span>
+          <span class="brand-subtitle">Inteligência para decisões</span>
+        </span>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary header-btn" id="edit-report-btn" hidden>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+          </svg>
+          <span class="btn-label">Editar atual</span>
+        </button>
+        <button type="button" class="btn btn-primary header-btn" id="add-report-btn">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 5v14" />
+            <path d="M5 12h14" />
+          </svg>
+          <span class="btn-label">Adicionar relatório</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main-content" tabindex="-1">
+      <!-- Tela inicial (sem relatórios) -->
+      <section class="empty-state" id="empty-state" aria-labelledby="empty-title">
+        <div class="empty-content">
+          <span class="eyebrow-line" aria-hidden="true"></span>
+          <p class="eyebrow">POWER BI INSTITUCIONAL</p>
+          <h1 class="empty-title" id="empty-title">
+            <span>Seus indicadores,</span>
+            <span>em um só lugar.</span>
+          </h1>
+          <p class="empty-text">
+            Adicione o link seguro do seu relatório para transformar esta página no ponto de acesso aos
+            dados da sua equipe.
+          </p>
+        </div>
+
+        <div class="illustration-wrap" aria-hidden="true">
+          <div class="illustration">
+            <div class="ill-topbar">
+              <span class="ill-dot"></span>
+              <span class="ill-dot"></span>
+              <span class="ill-dot"></span>
+              <span class="ill-topbar-title"></span>
+            </div>
+            <div class="ill-body">
+              <div class="ill-sidebar">
+                <span class="ill-side-icon is-active"></span>
+                <span class="ill-side-icon"></span>
+                <span class="ill-side-icon"></span>
+                <span class="ill-side-icon"></span>
+              </div>
+              <div class="ill-main">
+                <span class="ill-title-bar"></span>
+                <div class="ill-metrics">
+                  <div class="ill-metric">
+                    <strong>24</strong>
+                    <span></span>
+                  </div>
+                  <div class="ill-metric">
+                    <strong>87%</strong>
+                    <span></span>
+                  </div>
+                  <div class="ill-metric">
+                    <strong>12</strong>
+                    <span></span>
+                  </div>
+                </div>
+                <div class="ill-charts">
+                  <div class="ill-bars">
+                    <span style="--h: 46%"></span>
+                    <span style="--h: 68%"></span>
+                    <span class="is-accent" style="--h: 88%"></span>
+                    <span style="--h: 56%"></span>
+                    <span style="--h: 76%"></span>
+                    <span class="is-accent" style="--h: 62%"></span>
+                  </div>
+                  <div class="ill-donut-card">
+                    <span class="ill-donut"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tela com relatórios -->
+      <section class="reports-view" id="reports-view" hidden aria-label="Relatórios cadastrados">
+        <nav class="tabs-bar" aria-label="Relatórios">
+          <div class="tabs" id="report-tabs" role="tablist" aria-label="Relatórios cadastrados"></div>
+        </nav>
+
+        <div class="report-area">
+          <div class="report-toolbar">
+            <div class="report-heading">
+              <p class="eyebrow eyebrow-small">RELATÓRIO ATIVO</p>
+              <h1 class="report-name" id="report-name"></h1>
+            </div>
+            <button type="button" class="btn btn-secondary" id="reload-report-btn">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+                <path d="M21 3v6h-6" />
+              </svg>
+              <span>Recarregar</span>
+            </button>
+          </div>
+
+          <div class="report-frame" id="report-panel" role="tabpanel" aria-labelledby="report-name">
+            <div class="skeleton" id="report-skeleton" aria-hidden="true">
+              <span class="sk-line"></span>
+              <span class="sk-block"></span>
+              <span class="sk-block"></span>
+            </div>
+            <iframe
+              id="report-iframe"
+              title="Relatório"
+              allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Painel lateral de configuração -->
+    <dialog class="side-panel" id="report-dialog" aria-labelledby="dialog-title">
+      <form class="panel-form" id="report-form" novalidate>
+        <header class="panel-header">
+          <div>
+            <p class="eyebrow eyebrow-small">CONFIGURAÇÃO</p>
+            <h2 class="panel-title" id="dialog-title">Adicionar relatório</h2>
+          </div>
+          <button type="button" class="icon-btn" id="close-dialog-btn" aria-label="Fechar painel">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="panel-body">
+          <ol class="steps">
+            <li class="step">
+              <span class="step-number" aria-hidden="true">1</span>
+              <div>
+                <p class="step-title">Copie o link no Power BI</p>
+                <p class="step-text">
+                  Abra o relatório, acesse Incorporar relatório e copie o campo “Link to embed this
+                  content”.
+                </p>
+              </div>
+            </li>
+          </ol>
+
+          <div class="field">
+            <label class="field-label" for="report-url">URL de incorporação</label>
+            <div class="input-wrap">
+              <svg class="icon input-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              <input
+                type="text"
+                id="report-url"
+                name="url"
+                inputmode="url"
+                autocomplete="off"
+                spellcheck="false"
+                required
+                placeholder="https://app.powerbi.com/reportEmbed?reportId=..."
+                aria-describedby="report-url-help report-url-error"
+              />
+              <button type="button" class="paste-btn" id="paste-btn">Colar</button>
+            </div>
+            <p class="field-help" id="report-url-help">Aceitamos links HTTPS de app.powerbi.com.</p>
+            <p class="field-error" id="report-url-error" role="alert"></p>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="report-title">Nome do relatório (opcional)</label>
+            <div class="input-wrap input-plain">
+              <input
+                type="text"
+                id="report-title"
+                name="name"
+                maxlength="70"
+                autocomplete="off"
+                placeholder="Ex.: Panorama do setor"
+              />
+            </div>
+          </div>
+
+          <div class="info-box">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6Z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+            <div>
+              <p class="info-title">Acesso protegido pelo Power BI</p>
+              <p class="info-text">
+                As permissões do relatório continuam sendo controladas pela sua conta Microsoft.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="panel-footer">
+          <button type="button" class="btn btn-danger" id="remove-report-btn" hidden>
+            Remover relatório
+          </button>
+          <div class="panel-footer-actions">
+            <button type="button" class="btn btn-secondary" id="cancel-dialog-btn">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="submit-report-btn">Adicionar e abrir</button>
+          </div>
+        </footer>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script type="module">
+const STORAGE_KEY = 'abihpec-powerbi-reports';
+const LEGACY_STORAGE_KEY = 'abihpec-powerbi-report';
+const TOAST_DURATION = 3200;
+
+const MESSAGES = {
+  empty: 'Cole a URL de incorporação do relatório.',
+  domain: 'Use um link HTTPS do domínio app.powerbi.com.',
+  path: 'O link precisa ser uma URL de incorporação ou visualização do Power BI.',
+  malformed: 'A URL informada não é válida.',
+  added: 'Relatório adicionado.',
+  updated: 'Relatório atualizado.',
+  removed: 'Relatório removido deste navegador.',
+  reloaded: 'Relatório recarregado.',
+  pasteBlocked: 'Use Ctrl+V para colar o link neste campo.',
+  storageBlocked:
+    'O navegador bloqueou o armazenamento local. Os relatórios não serão mantidos após fechar a página.',
+};
+
+/* ---------- Elementos ---------- */
+const els = {
+  addBtn: document.getElementById('add-report-btn'),
+  editBtn: document.getElementById('edit-report-btn'),
+  emptyState: document.getElementById('empty-state'),
+  reportsView: document.getElementById('reports-view'),
+  tabs: document.getElementById('report-tabs'),
+  reportName: document.getElementById('report-name'),
+  reloadBtn: document.getElementById('reload-report-btn'),
+  iframe: document.getElementById('report-iframe'),
+  skeleton: document.getElementById('report-skeleton'),
+  dialog: document.getElementById('report-dialog'),
+  form: document.getElementById('report-form'),
+  dialogTitle: document.getElementById('dialog-title'),
+  closeBtn: document.getElementById('close-dialog-btn'),
+  cancelBtn: document.getElementById('cancel-dialog-btn'),
+  removeBtn: document.getElementById('remove-report-btn'),
+  submitBtn: document.getElementById('submit-report-btn'),
+  urlInput: document.getElementById('report-url'),
+  nameInput: document.getElementById('report-title'),
+  urlError: document.getElementById('report-url-error'),
+  pasteBtn: document.getElementById('paste-btn'),
+  toast: document.getElementById('toast'),
+};
+
+/* ---------- Estado ---------- */
+let state = { reports: [], activeId: null };
+let dialogMode = 'create';
+let toastTimer = null;
+let storageWarningShown = false;
+
+/* ---------- Utilidades ---------- */
+function createId() {
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return window.crypto.randomUUID();
+  }
+  return `r-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function showToast(message) {
+  els.toast.textContent = message;
+  els.toast.classList.add('is-visible');
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    els.toast.classList.remove('is-visible');
+  }, TOAST_DURATION);
+}
+
+function warnStorageBlocked() {
+  if (storageWarningShown) return;
+  storageWarningShown = true;
+  showToast(MESSAGES.storageBlocked);
+}
+
+/* ---------- Validação ---------- */
+function extractIframeSrc(raw) {
+  const doc = new DOMParser().parseFromString(raw, 'text/html');
+  const frame = doc.querySelector('iframe');
+  return frame ? (frame.getAttribute('src') || '').trim() : '';
+}
+
+/**
+ * Valida e normaliza uma URL do Power BI.
+ * Retorna { ok: true, url } ou { ok: false, error }.
+ */
+function validateEmbedUrl(rawValue) {
+  let value = (rawValue || '').trim();
+  if (!value) return { ok: false, error: MESSAGES.empty };
+
+  if (/<iframe[\s>]/i.test(value)) {
+    value = extractIframeSrc(value);
+    if (!value) return { ok: false, error: MESSAGES.malformed };
+  }
+
+  let parsed;
+  try {
+    parsed = new URL(value);
+  } catch {
+    return { ok: false, error: MESSAGES.malformed };
+  }
+
+  const host = parsed.hostname.toLowerCase();
+  const validHost = host === 'app.powerbi.com' || host.endsWith('.powerbi.com');
+  if (parsed.protocol !== 'https:' || !validHost || parsed.username || parsed.password || parsed.port) {
+    return { ok: false, error: MESSAGES.domain };
+  }
+
+  if (!/reportembed|\/view/i.test(parsed.pathname)) {
+    return { ok: false, error: MESSAGES.path };
+  }
+
+  return { ok: true, url: parsed.href };
+}
+
+/* ---------- Persistência ---------- */
+function sanitizeReports(list) {
+  if (!Array.isArray(list)) return [];
+  const seen = new Set();
+  const result = [];
+  list.forEach((item, index) => {
+    if (!item || typeof item !== 'object') return;
+    const check = validateEmbedUrl(String(item.url || ''));
+    if (!check.ok) return;
+    let id = typeof item.id === 'string' && item.id ? item.id : createId();
+    if (seen.has(id)) id = createId();
+    seen.add(id);
+    const name =
+      typeof item.name === 'string' && item.name.trim()
+        ? item.name.trim().slice(0, 70)
+        : `Relatório ${index + 1}`;
+    result.push({ id, url: check.url, name });
+  });
+  return result;
+}
+
+function saveState() {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    return true;
+  } catch (error) {
+    console.error('Não foi possível salvar os relatórios no navegador.', error);
+    warnStorageBlocked();
+    return false;
+  }
+}
+
+function migrateLegacy() {
+  const legacyRaw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+  if (legacyRaw === null) return null;
+
+  let legacy = null;
+  try {
+    legacy = JSON.parse(legacyRaw);
+  } catch (error) {
+    console.error('Formato antigo de relatório inválido; não foi possível migrar.', error);
+  }
+
+  const migrated = { reports: [], activeId: null };
+  if (legacy && typeof legacy === 'object') {
+    const check = validateEmbedUrl(String(legacy.url || ''));
+    if (check.ok) {
+      const name =
+        typeof legacy.name === 'string' && legacy.name.trim()
+          ? legacy.name.trim().slice(0, 70)
+          : 'Relatório 1';
+      const report = { id: createId(), url: check.url, name };
+      migrated.reports.push(report);
+      migrated.activeId = report.id;
+    }
+  }
+
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+  window.localStorage.removeItem(LEGACY_STORAGE_KEY);
+  return migrated;
+}
+
+function loadState() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    let data = null;
+
+    if (raw !== null) {
+      try {
+        data = JSON.parse(raw);
+      } catch (error) {
+        console.error('Dados de relatórios corrompidos no navegador.', error);
+      }
+    } else {
+      data = migrateLegacy();
+    }
+
+    const reports = sanitizeReports(data && data.reports);
+    const activeExists = data && reports.some((r) => r.id === data.activeId);
+    return {
+      reports,
+      activeId: activeExists ? data.activeId : reports[0] ? reports[0].id : null,
+    };
+  } catch (error) {
+    console.error('Não foi possível acessar o armazenamento do navegador.', error);
+    warnStorageBlocked();
+    return { reports: [], activeId: null };
+  }
+}
+
+/* ---------- Renderização ---------- */
+function getActiveReport() {
+  return state.reports.find((r) => r.id === state.activeId) || null;
+}
+
+function loadIframe(url, force = false) {
+  const check = validateEmbedUrl(url);
+  if (!check.ok) return;
+  if (!force && els.iframe.getAttribute('src') === check.url) return;
+  els.skeleton.hidden = false;
+  els.iframe.classList.add('is-loading');
+  els.iframe.src = check.url;
+}
+
+function renderTabs() {
+  els.tabs.replaceChildren();
+  state.reports.forEach((report) => {
+    const isActive = report.id === state.activeId;
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = 'tab';
+    tab.id = `tab-${report.id}`;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-selected', String(isActive));
+    tab.setAttribute('aria-controls', 'report-panel');
+    tab.tabIndex = isActive ? 0 : -1;
+    tab.dataset.id = report.id;
+    tab.textContent = report.name;
+    tab.title = report.name;
+    els.tabs.append(tab);
+  });
+
+  const activeTab = els.tabs.querySelector('[aria-selected="true"]');
+  if (activeTab) {
+    activeTab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    els.reportsView.querySelector('.report-frame').setAttribute('aria-labelledby', activeTab.id);
+  }
+}
+
+function render() {
+  const hasReports = state.reports.length > 0;
+  els.emptyState.hidden = hasReports;
+  els.reportsView.hidden = !hasReports;
+  els.editBtn.hidden = !hasReports;
+  document.body.classList.toggle('has-reports', hasReports);
+
+  if (!hasReports) {
+    els.iframe.removeAttribute('src');
+    els.tabs.replaceChildren();
+    return;
+  }
+
+  const active = getActiveReport();
+  renderTabs();
+  els.reportName.textContent = active.name;
+  els.iframe.title = active.name;
+  loadIframe(active.url);
+}
+
+function setActive(id, focusTab = false) {
+  if (!state.reports.some((r) => r.id === id) || id === state.activeId) return;
+  state.activeId = id;
+  saveState();
+  render();
+  if (focusTab) {
+    const tab = document.getElementById(`tab-${id}`);
+    if (tab) tab.focus();
+  }
+}
+
+/* ---------- Painel ---------- */
+function setUrlError(message) {
+  els.urlError.textContent = message;
+  if (message) {
+    els.urlInput.setAttribute('aria-invalid', 'true');
+  } else {
+    els.urlInput.removeAttribute('aria-invalid');
+  }
+}
+
+function openDialog(mode) {
+  dialogMode = mode;
+  setUrlError('');
+  els.form.reset();
+
+  if (mode === 'edit') {
+    const active = getActiveReport();
+    if (!active) return;
+    els.dialogTitle.textContent = 'Editar relatório';
+    els.submitBtn.textContent = 'Salvar alterações';
+    els.removeBtn.hidden = false;
+    els.urlInput.value = active.url;
+    els.nameInput.value = active.name;
+  } else {
+    els.dialogTitle.textContent = 'Adicionar relatório';
+    els.submitBtn.textContent = 'Adicionar e abrir';
+    els.removeBtn.hidden = true;
+  }
+
+  els.dialog.classList.remove('is-closing');
+  els.dialog.showModal();
+  els.urlInput.focus();
+}
+
+function closeDialog() {
+  if (!els.dialog.open) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    els.dialog.close();
+    return;
+  }
+  els.dialog.classList.add('is-closing');
+  window.setTimeout(() => {
+    els.dialog.classList.remove('is-closing');
+    els.dialog.close();
+  }, 180);
+}
+
+function handleSubmit(event) {
+  event.preventDefault();
+  const check = validateEmbedUrl(els.urlInput.value);
+  if (!check.ok) {
+    setUrlError(check.error);
+    els.urlInput.focus();
+    return;
+  }
+  setUrlError('');
+  const typedName = els.nameInput.value.trim().slice(0, 70);
+
+  if (dialogMode === 'edit') {
+    const active = getActiveReport();
+    if (!active) return;
+    active.url = check.url;
+    active.name = typedName || active.name;
+    saveState();
+    closeDialog();
+    render();
+    loadIframe(active.url, true);
+    showToast(MESSAGES.updated);
+    return;
+  }
+
+  const report = {
+    id: createId(),
+    url: check.url,
+    name: typedName || `Relatório ${state.reports.length + 1}`,
+  };
+  state.reports.push(report);
+  state.activeId = report.id;
+  saveState();
+  closeDialog();
+  render();
+  showToast(MESSAGES.added);
+}
+
+function handleRemove() {
+  const index = state.reports.findIndex((r) => r.id === state.activeId);
+  if (index === -1) return;
+  state.reports.splice(index, 1);
+
+  if (state.reports.length === 0) {
+    state.activeId = null;
+  } else if (index < state.reports.length) {
+    state.activeId = state.reports[index].id; // próximo
+  } else {
+    state.activeId = state.reports[index - 1].id; // anterior
+  }
+
+  saveState();
+  closeDialog();
+  render();
+  showToast(MESSAGES.removed);
+  if (state.reports.length === 0) els.addBtn.focus();
+}
+
+async function handlePaste() {
+  try {
+    if (!navigator.clipboard || typeof navigator.clipboard.readText !== 'function') {
+      throw new Error('Clipboard API indisponível');
+    }
+    const text = await navigator.clipboard.readText();
+    els.urlInput.value = text.trim();
+    setUrlError('');
+    els.urlInput.focus();
+  } catch {
+    els.urlInput.focus();
+    showToast(MESSAGES.pasteBlocked);
+  }
+}
+
+/* ---------- Abas por teclado ---------- */
+function handleTabKeydown(event) {
+  const tabs = Array.from(els.tabs.querySelectorAll('[role="tab"]'));
+  const current = tabs.indexOf(document.activeElement);
+  if (current === -1) return;
+  let next = null;
+  if (event.key === 'ArrowRight') next = (current + 1) % tabs.length;
+  else if (event.key === 'ArrowLeft') next = (current - 1 + tabs.length) % tabs.length;
+  else if (event.key === 'Home') next = 0;
+  else if (event.key === 'End') next = tabs.length - 1;
+  if (next === null) return;
+  event.preventDefault();
+  setActive(tabs[next].dataset.id, true);
+}
+
+/* ---------- Eventos ---------- */
+els.addBtn.addEventListener('click', () => openDialog('create'));
+els.editBtn.addEventListener('click', () => openDialog('edit'));
+els.closeBtn.addEventListener('click', closeDialog);
+els.cancelBtn.addEventListener('click', closeDialog);
+els.removeBtn.addEventListener('click', handleRemove);
+els.pasteBtn.addEventListener('click', handlePaste);
+els.form.addEventListener('submit', handleSubmit);
+
+els.dialog.addEventListener('cancel', (event) => {
+  event.preventDefault();
+  closeDialog();
+});
+els.dialog.addEventListener('click', (event) => {
+  if (event.target === els.dialog) closeDialog();
+});
+
+els.urlInput.addEventListener('input', () => {
+  if (els.urlInput.hasAttribute('aria-invalid')) setUrlError('');
+});
+
+els.tabs.addEventListener('click', (event) => {
+  const tab = event.target.closest('[role="tab"]');
+  if (tab) setActive(tab.dataset.id, true);
+});
+els.tabs.addEventListener('keydown', handleTabKeydown);
+
+els.reloadBtn.addEventListener('click', () => {
+  const active = getActiveReport();
+  if (!active) return;
+  loadIframe(active.url, true);
+  showToast(MESSAGES.reloaded);
+});
+
+els.iframe.addEventListener('load', () => {
+  if (!els.iframe.getAttribute('src')) return;
+  els.skeleton.hidden = true;
+  els.iframe.classList.remove('is-loading');
+});
+
+/* ---------- Inicialização ---------- */
+state = loadState();
+render();
+
+</script>
+  </body>
+</html>
