@@ -1398,6 +1398,21 @@ input {
     <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <script type="module">
+/* =====================================================================
+   RELATÓRIOS FIXOS — aparecem para TODOS que abrirem o portal.
+   Para adicionar um relatório, copie uma linha { name: ..., url: ... },
+   cole abaixo da última (com vírgula no final) e troque o nome e o link.
+   Se esta lista ficar vazia ( [] ), o portal volta ao modo de cadastro
+   pelo navegador (botão "Adicionar relatório").
+   ===================================================================== */
+const FIXED_REPORTS = [
+  {
+    name: 'Cooperativas Possíveis',
+    url: 'https://app.powerbi.com/reportEmbed?reportId=d9fd6450-d442-492a-a4f3-13b7d55add1f&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84',
+  },
+];
+
+const FIXED_MODE = FIXED_REPORTS.length > 0;
 const STORAGE_KEY = 'abihpec-powerbi-reports';
 const LEGACY_STORAGE_KEY = 'abihpec-powerbi-report';
 const TOAST_DURATION = 3200;
@@ -1532,6 +1547,7 @@ function sanitizeReports(list) {
 }
 
 function saveState() {
+  if (FIXED_MODE) return true;
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     return true;
@@ -1572,7 +1588,25 @@ function migrateLegacy() {
   return migrated;
 }
 
+function loadFixedState() {
+  const reports = [];
+  FIXED_REPORTS.forEach((item, index) => {
+    const check = validateEmbedUrl(String((item && item.url) || ''));
+    if (!check.ok) {
+      console.error(`Relatório fixo ${index + 1} ignorado: ${check.error}`);
+      return;
+    }
+    const name =
+      item && typeof item.name === 'string' && item.name.trim()
+        ? item.name.trim().slice(0, 70)
+        : `Relatório ${index + 1}`;
+    reports.push({ id: `fixo-${index + 1}`, url: check.url, name });
+  });
+  return { reports, activeId: reports[0] ? reports[0].id : null };
+}
+
 function loadState() {
+  if (FIXED_MODE) return loadFixedState();
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     let data = null;
@@ -1643,7 +1677,8 @@ function render() {
   const hasReports = state.reports.length > 0;
   els.emptyState.hidden = hasReports;
   els.reportsView.hidden = !hasReports;
-  els.editBtn.hidden = !hasReports;
+  els.editBtn.hidden = !hasReports || FIXED_MODE;
+  els.addBtn.hidden = FIXED_MODE;
   document.body.classList.toggle('has-reports', hasReports);
 
   if (!hasReports) {
