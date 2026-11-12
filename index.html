@@ -1702,6 +1702,63 @@ a {
   }
 }
 
+/* ---------- Publicação no GitHub ---------- */
+.btn-publish {
+  border-color: var(--coral);
+  color: var(--coral-deep);
+}
+
+.btn-publish:hover {
+  background: var(--coral-100);
+  border-color: var(--coral-deep);
+}
+
+.btn-publish[aria-busy='true'] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.admin-sep {
+  width: 1px;
+  height: 22px;
+  margin: 0 4px;
+  background: var(--line);
+}
+
+.gh-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 16px 18px 16px 36px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.gh-steps a {
+  color: var(--blue-700);
+  font-weight: 600;
+}
+
+.gh-ok {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: oklch(0.96 0.04 155);
+  color: oklch(0.38 0.1 155);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (max-width: 700px) {
+  .admin-sep {
+    display: none;
+  }
+}
+
 </style>
   </head>
   <body class="on-home">
@@ -1750,14 +1807,28 @@ a {
             </svg>
             <span class="btn-label">Editar atual</span>
           </button>
-          <button type="button" class="btn btn-secondary btn-sm" id="publish-btn">
+          <button type="button" class="btn btn-secondary btn-sm btn-publish" id="publish-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 21V9" /><path d="m7 14 5-5 5 5" /><path d="M5 3h14" />
+            </svg>
+            <span class="btn-label">Publicar</span>
+            <span class="dirty-dot" id="dirty-dot" hidden aria-hidden="true"></span>
+          </button>
+          <span class="admin-sep" aria-hidden="true"></span>
+          <button type="button" class="btn btn-quiet btn-sm" id="download-btn" title="Baixar relatorios.json (alternativa manual)">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" />
             </svg>
-            <span class="btn-label">Baixar relatorios.json</span>
-            <span class="dirty-dot" id="dirty-dot" hidden aria-hidden="true"></span>
+            <span class="btn-label">Baixar arquivo</span>
           </button>
-          <button type="button" class="btn btn-secondary btn-sm" id="password-btn">
+          <button type="button" class="btn btn-quiet btn-sm" id="github-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+            </svg>
+            <span class="btn-label">Conexão GitHub</span>
+          </button>
+          <button type="button" class="btn btn-quiet btn-sm" id="password-btn">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <circle cx="8" cy="15" r="4" /><path d="m10.8 12.2 8.2-8.2" /><path d="m16 7 3 3" />
             </svg>
@@ -2063,6 +2134,74 @@ a {
       </form>
     </dialog>
 
+    <!-- ============ Painel: conexão com o GitHub ============ -->
+    <dialog class="side-panel" id="github-dialog" aria-labelledby="github-title">
+      <form class="panel-form" id="github-form" novalidate>
+        <header class="panel-header">
+          <div>
+            <p class="eyebrow">Publicação</p>
+            <h2 class="panel-title" id="github-title">Conexão com o GitHub</h2>
+          </div>
+          <button type="button" class="icon-btn" data-close aria-label="Fechar painel">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+          </button>
+        </header>
+
+        <div class="panel-body">
+          <p class="auth-intro">
+            Com a conexão configurada, o botão <strong>Publicar</strong> envia as alterações direto para o
+            repositório do portal. A chave fica salva só neste navegador.
+          </p>
+
+          <ol class="gh-steps">
+            <li>
+              Abra
+              <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">GitHub › Fine-grained token</a>.
+            </li>
+            <li>Dê um nome (ex.: <em>Portal Indicadores</em>) e escolha a validade.</li>
+            <li>Em <strong>Repository access</strong>, marque <em>Only select repositories</em> e escolha o repositório do portal.</li>
+            <li>Em <strong>Permissions › Contents</strong>, escolha <em>Read and write</em>.</li>
+            <li>Clique em <strong>Generate token</strong>, copie e cole abaixo.</li>
+          </ol>
+
+          <div class="field">
+            <label class="field-label" for="gh-repo">Repositório</label>
+            <div class="input-wrap input-plain">
+              <input type="text" id="gh-repo" autocomplete="off" spellcheck="false" placeholder="usuario/portal-indicadores" aria-describedby="gh-repo-help" />
+            </div>
+            <p class="field-help" id="gh-repo-help">Formato usuário/repositório. Preenchido automaticamente quando o portal está no GitHub Pages.</p>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="gh-branch">Branch</label>
+            <div class="input-wrap input-plain">
+              <input type="text" id="gh-branch" autocomplete="off" spellcheck="false" placeholder="main" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="gh-token">Chave de acesso (token)</label>
+            <div class="input-wrap input-plain">
+              <input type="password" id="gh-token" autocomplete="off" spellcheck="false" placeholder="github_pat_..." aria-describedby="gh-token-help gh-error" />
+              <button type="button" class="paste-btn" id="gh-toggle" aria-pressed="false">Mostrar</button>
+            </div>
+            <p class="field-help" id="gh-token-help">Use este recurso só no seu computador. Em computador compartilhado, remova a chave ao terminar.</p>
+          </div>
+
+          <p class="field-error" id="gh-error" role="alert"></p>
+          <p class="gh-ok" id="gh-ok" role="status" hidden></p>
+        </div>
+
+        <footer class="panel-footer">
+          <button type="button" class="btn btn-danger" id="gh-remove-btn" hidden>Remover chave</button>
+          <div class="panel-footer-actions">
+            <button type="button" class="btn btn-secondary" data-close>Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="gh-submit">Testar e salvar</button>
+          </div>
+        </footer>
+      </form>
+    </dialog>
+
     <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <script type="module">
@@ -2078,6 +2217,9 @@ const PUBLISHED_FILE = './relatorios.json';
 const DRAFT_KEY = 'abihpec-powerbi-reports';
 const LEGACY_STORAGE_KEY = 'abihpec-powerbi-report';
 const SESSION_KEY = 'abihpec-adm-sessao';
+const GITHUB_KEY = 'abihpec-github';
+const GITHUB_API = 'https://api.github.com';
+const PUBLISHED_PATH = 'relatorios.json';
 const DEFAULT_AREA = 'Geral';
 const PBKDF2_ITERATIONS = 210000;
 const MIN_PASSWORD = 8;
@@ -2108,9 +2250,21 @@ const MESSAGES = {
   mismatch: 'As senhas não conferem.',
   noCrypto: 'Este navegador não permite verificar a senha. Use o Chrome ou o Edge atualizados.',
   welcome: 'Acesso ADM liberado.',
-  created: 'Senha criada. Baixe o relatorios.json e envie ao GitHub para valer em qualquer computador.',
-  changed: 'Senha alterada. Baixe o relatorios.json e envie ao GitHub para publicar.',
+  created: 'Senha criada. Clique em Publicar para ela valer em qualquer computador.',
+  changed: 'Senha alterada. Clique em Publicar para ela passar a valer.',
   loggedOut: 'Você saiu do modo ADM.',
+  published: 'Publicado! Os colegas veem a nova versão em 1 a 2 minutos.',
+  nothingToPublish: 'Não há alterações para publicar.',
+  publishing: 'Publicando…',
+  ghSaved: 'Conexão com o GitHub salva.',
+  ghRemoved: 'Chave removida deste navegador.',
+  ghRepo: 'Informe o repositório no formato usuário/repositório.',
+  ghToken: 'Cole a chave de acesso (token) do GitHub.',
+  ghBadToken: 'Chave inválida ou expirada. Gere uma nova chave no GitHub.',
+  ghNoRepo: 'Repositório não encontrado ou a chave não tem acesso a ele.',
+  ghNoWrite: 'A chave não tem permissão de escrita. Em Permissions › Contents, escolha “Read and write”.',
+  ghNetwork: 'Não foi possível falar com o GitHub. Verifique a internet e tente de novo.',
+  ghConflict: 'O arquivo mudou no GitHub enquanto você editava. Tente publicar de novo.',
 };
 
 /* ---------- Elementos ---------- */
@@ -2124,6 +2278,18 @@ const els = {
   addBtn: $('add-report-btn'),
   editBtn: $('edit-report-btn'),
   publishBtn: $('publish-btn'),
+  downloadBtn: $('download-btn'),
+  githubBtn: $('github-btn'),
+  githubDialog: $('github-dialog'),
+  githubForm: $('github-form'),
+  ghRepo: $('gh-repo'),
+  ghBranch: $('gh-branch'),
+  ghToken: $('gh-token'),
+  ghToggle: $('gh-toggle'),
+  ghError: $('gh-error'),
+  ghOk: $('gh-ok'),
+  ghSubmit: $('gh-submit'),
+  ghRemoveBtn: $('gh-remove-btn'),
   dirtyDot: $('dirty-dot'),
   passwordBtn: $('password-btn'),
   discardBtn: $('discard-btn'),
@@ -2187,6 +2353,8 @@ let failedAttempts = 0;
 let lockedUntil = 0;
 let toastTimer = null;
 let storageWarningShown = false;
+let publishAfterConnect = false;
+let publishing = false;
 const lastByArea = new Map();
 
 /* ---------- Utilidades ---------- */
@@ -2426,7 +2594,7 @@ function updateDirty() {
     strong,
     document.createTextNode(
       dirty
-        ? 'Há alterações não publicadas. Baixe o relatorios.json e envie ao GitHub.'
+        ? 'Há alterações não publicadas. Clique em Publicar.'
         : 'Tudo publicado.',
     ),
   );
@@ -2452,6 +2620,24 @@ function writeSession(on) {
     else window.sessionStorage.removeItem(SESSION_KEY);
   } catch (error) {
     console.error('Não foi possível registrar a sessão ADM.', error);
+  }
+}
+
+async function refreshPublishedFromGithub() {
+  const cfg = readGithub();
+  if (!cfg) return;
+  try {
+    const { text } = await fetchRemoteFile(cfg);
+    if (!text) return;
+    const data = JSON.parse(text);
+    published = {
+      reports: sanitizeReports(data.reports),
+      admin: sanitizeAdmin(data.admin),
+      updatedAt: typeof data.updatedAt === 'string' ? data.updatedAt : published.updatedAt,
+      error: false,
+    };
+  } catch (error) {
+    console.error('Não foi possível ler a versão mais recente no GitHub.', error);
   }
 }
 
@@ -2969,6 +3155,7 @@ async function handleAuthSubmit(event) {
     }
     failedAttempts = 0;
     closePanel(els.authDialog);
+    await refreshPublishedFromGithub();
     enterAdmin();
     showToast(MESSAGES.welcome);
     return;
@@ -3008,6 +3195,243 @@ async function handleAuthSubmit(event) {
     markChanged();
     render();
     showToast(MESSAGES.changed);
+  }
+}
+
+/* ---------- Conexão com o GitHub ---------- */
+function guessRepo() {
+  const host = window.location.hostname.toLowerCase();
+  const match = host.match(/^([a-z0-9-]+)\.github\.io$/);
+  if (!match) return '';
+  const first = window.location.pathname.split('/').filter(Boolean)[0];
+  return first && !first.includes('.') ? `${match[1]}/${first}` : `${match[1]}/${host}`;
+}
+
+function readGithub() {
+  try {
+    const data = JSON.parse(window.localStorage.getItem(GITHUB_KEY) || 'null');
+    if (data && typeof data.token === 'string' && typeof data.repo === 'string') {
+      return { repo: data.repo, branch: data.branch || 'main', token: data.token };
+    }
+  } catch (error) {
+    console.error('Não foi possível ler a conexão com o GitHub.', error);
+  }
+  return null;
+}
+
+function writeGithub(cfg) {
+  try {
+    if (cfg) window.localStorage.setItem(GITHUB_KEY, JSON.stringify(cfg));
+    else window.localStorage.removeItem(GITHUB_KEY);
+    return true;
+  } catch (error) {
+    console.error('Não foi possível salvar a conexão com o GitHub.', error);
+    warnStorageBlocked();
+    return false;
+  }
+}
+
+function parseRepo(value) {
+  const cleaned = value
+    .trim()
+    .replace(/^https?:\/\/github\.com\//i, '')
+    .replace(/\.git$/i, '')
+    .replace(/\/+$/, '');
+  return /^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/.test(cleaned) ? cleaned : '';
+}
+
+class GithubError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
+
+async function ghRequest(cfg, path, options = {}) {
+  let response;
+  try {
+    response = await fetch(`${GITHUB_API}${path}`, {
+      ...options,
+      cache: 'no-store',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${cfg.token}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+        ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(options.headers || {}),
+      },
+    });
+  } catch (error) {
+    console.error('Falha de rede ao acessar o GitHub.', error);
+    throw new GithubError(0, MESSAGES.ghNetwork);
+  }
+  if (response.ok) return response;
+  if (response.status === 401) throw new GithubError(401, MESSAGES.ghBadToken);
+  if (response.status === 404) throw new GithubError(404, MESSAGES.ghNoRepo);
+  if (response.status === 403) throw new GithubError(403, MESSAGES.ghNoWrite);
+  if (response.status === 409 || response.status === 422) throw new GithubError(response.status, MESSAGES.ghConflict);
+  throw new GithubError(response.status, `${MESSAGES.ghNetwork} (código ${response.status})`);
+}
+
+function contentPath(cfg) {
+  return `/repos/${cfg.repo}/contents/${PUBLISHED_PATH}`;
+}
+
+function utf8ToBase64(text) {
+  const bytes = new TextEncoder().encode(text);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(binary);
+}
+
+function base64ToUtf8(b64) {
+  const binary = atob(b64.replace(/\s/g, ''));
+  return new TextDecoder().decode(Uint8Array.from(binary, (c) => c.charCodeAt(0)));
+}
+
+async function fetchRemoteFile(cfg) {
+  try {
+    const response = await ghRequest(cfg, `${contentPath(cfg)}?ref=${encodeURIComponent(cfg.branch)}`);
+    const data = await response.json();
+    return { sha: data.sha, text: data.content ? base64ToUtf8(data.content) : null };
+  } catch (error) {
+    if (error.status === 404) return { sha: null, text: null };
+    throw error;
+  }
+}
+
+async function testGithub(cfg) {
+  const response = await ghRequest(cfg, `/repos/${cfg.repo}`);
+  const repo = await response.json();
+  if (repo.permissions && repo.permissions.push === false) throw new GithubError(403, MESSAGES.ghNoWrite);
+  return repo;
+}
+
+function buildPublishedText() {
+  const data = { updatedAt: new Date().toISOString(), ...payload(state) };
+  return `${JSON.stringify(data, null, 2)}\n`;
+}
+
+async function publishToGithub() {
+  const cfg = readGithub();
+  if (!cfg) {
+    publishAfterConnect = true;
+    openGithubDialog();
+    return;
+  }
+  if (!dirty) {
+    showToast(MESSAGES.nothingToPublish);
+    return;
+  }
+  if (publishing) return;
+  publishing = true;
+  els.publishBtn.setAttribute('aria-busy', 'true');
+  els.publishBtn.querySelector('.btn-label').textContent = MESSAGES.publishing;
+
+  const text = buildPublishedText();
+  const body = (sha) =>
+    JSON.stringify({
+      message: 'Atualiza relatórios do Portal de Indicadores',
+      content: utf8ToBase64(text),
+      branch: cfg.branch,
+      ...(sha ? { sha } : {}),
+    });
+
+  try {
+    let { sha } = await fetchRemoteFile(cfg);
+    try {
+      await ghRequest(cfg, contentPath(cfg), { method: 'PUT', body: body(sha) });
+    } catch (error) {
+      if (error.status !== 409 && error.status !== 422) throw error;
+      ({ sha } = await fetchRemoteFile(cfg));
+      await ghRequest(cfg, contentPath(cfg), { method: 'PUT', body: body(sha) });
+    }
+    const saved = JSON.parse(text);
+    published = {
+      reports: state.reports.map((r) => ({ ...r })),
+      admin: state.admin,
+      updatedAt: saved.updatedAt,
+      error: false,
+    };
+    clearDraft();
+    updateDirty();
+    render();
+    showToast(MESSAGES.published);
+  } catch (error) {
+    console.error('Falha ao publicar no GitHub.', error);
+    if (error.status === 401) {
+      publishAfterConnect = true;
+      openGithubDialog(error.message);
+    } else {
+      showToast(error.message || MESSAGES.ghNetwork);
+    }
+  } finally {
+    publishing = false;
+    els.publishBtn.removeAttribute('aria-busy');
+    els.publishBtn.querySelector('.btn-label').textContent = 'Publicar';
+  }
+}
+
+function setGithubError(message) {
+  els.ghError.textContent = message;
+  els.ghOk.hidden = true;
+}
+
+function openGithubDialog(errorMessage = '') {
+  const cfg = readGithub();
+  els.githubForm.reset();
+  els.ghRepo.value = (cfg && cfg.repo) || guessRepo();
+  els.ghBranch.value = (cfg && cfg.branch) || 'main';
+  els.ghToken.value = '';
+  els.ghToken.placeholder = cfg ? 'Chave salva — cole outra para substituir' : 'github_pat_...';
+  els.ghToken.type = 'password';
+  els.ghToggle.textContent = 'Mostrar';
+  els.ghToggle.setAttribute('aria-pressed', 'false');
+  els.ghRemoveBtn.hidden = !cfg;
+  els.ghOk.hidden = true;
+  setGithubError(errorMessage);
+  openPanel(els.githubDialog);
+  (els.ghRepo.value ? els.ghToken : els.ghRepo).focus();
+}
+
+async function handleGithubSubmit(event) {
+  event.preventDefault();
+  const saved = readGithub();
+  const repo = parseRepo(els.ghRepo.value);
+  const branch = cleanText(els.ghBranch.value, 100) || 'main';
+  const token = els.ghToken.value.trim() || (saved ? saved.token : '');
+  if (!repo) {
+    setGithubError(MESSAGES.ghRepo);
+    els.ghRepo.focus();
+    return;
+  }
+  if (!token) {
+    setGithubError(MESSAGES.ghToken);
+    els.ghToken.focus();
+    return;
+  }
+  const cfg = { repo, branch, token };
+  els.ghSubmit.disabled = true;
+  setGithubError('');
+  try {
+    const info = await testGithub(cfg);
+    if (!writeGithub(cfg)) return;
+    els.ghOk.hidden = false;
+    els.ghOk.textContent = `Conectado a ${info.full_name || repo}.`;
+    els.ghRemoveBtn.hidden = false;
+    closePanel(els.githubDialog);
+    showToast(MESSAGES.ghSaved);
+    if (publishAfterConnect) {
+      publishAfterConnect = false;
+      await publishToGithub();
+    }
+  } catch (error) {
+    console.error('Falha ao testar a conexão com o GitHub.', error);
+    setGithubError(error.message || MESSAGES.ghNetwork);
+  } finally {
+    els.ghSubmit.disabled = false;
   }
 }
 
@@ -3064,7 +3488,24 @@ els.logoutBtn.addEventListener('click', leaveAdmin);
 els.passwordBtn.addEventListener('click', () => openAuthDialog('change'));
 els.addBtn.addEventListener('click', () => openReportDialog('create'));
 els.editBtn.addEventListener('click', () => openReportDialog('edit'));
-els.publishBtn.addEventListener('click', handleDownload);
+els.publishBtn.addEventListener('click', publishToGithub);
+els.downloadBtn.addEventListener('click', handleDownload);
+els.githubBtn.addEventListener('click', () => {
+  publishAfterConnect = false;
+  openGithubDialog();
+});
+els.githubForm.addEventListener('submit', handleGithubSubmit);
+els.ghRemoveBtn.addEventListener('click', () => {
+  writeGithub(null);
+  closePanel(els.githubDialog);
+  showToast(MESSAGES.ghRemoved);
+});
+els.ghToggle.addEventListener('click', () => {
+  const show = els.ghToken.type === 'password';
+  els.ghToken.type = show ? 'text' : 'password';
+  els.ghToggle.textContent = show ? 'Ocultar' : 'Mostrar';
+  els.ghToggle.setAttribute('aria-pressed', String(show));
+});
 els.discardBtn.addEventListener('click', handleDiscard);
 els.removeBtn.addEventListener('click', handleRemove);
 els.pasteBtn.addEventListener('click', handlePaste);
@@ -3079,7 +3520,7 @@ els.togglePassword.addEventListener('click', () => {
   els.togglePassword.setAttribute('aria-pressed', String(show));
 });
 
-[els.reportDialog, els.authDialog].forEach((dialog) => {
+[els.reportDialog, els.authDialog, els.githubDialog].forEach((dialog) => {
   dialog.addEventListener('cancel', (event) => {
     event.preventDefault();
     closePanel(dialog);
@@ -3089,6 +3530,9 @@ els.togglePassword.addEventListener('click', () => {
   });
 });
 
+els.githubDialog.addEventListener('close', () => {
+  publishAfterConnect = false;
+});
 els.urlInput.addEventListener('input', () => {
   if (els.urlInput.hasAttribute('aria-invalid')) setUrlError('');
 });
@@ -3151,6 +3595,7 @@ async function init() {
   state = { reports: published.reports.map((r) => ({ ...r })), admin: published.admin };
   route = parseRoute();
   if (readSession()) {
+    await refreshPublishedFromGithub();
     enterAdmin();
   } else {
     updateDirty();
