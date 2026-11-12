@@ -1164,22 +1164,369 @@ input {
   }
 }
 
+/* ---------- Modo administradora ---------- */
+.admin-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 10px clamp(16px, 4vw, 40px);
+  background: oklch(0.97 0.03 80);
+  border-bottom: 1px solid oklch(0.88 0.06 80);
+  color: oklch(0.36 0.06 70);
+  font-size: 13.5px;
+}
+
+.admin-banner code {
+  font-size: 12.5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: oklch(0.93 0.04 80);
+}
+
+.link-btn {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--error);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.dirty-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.header-btn {
+  position: relative;
+}
+
+/* ---------- Barra de áreas ---------- */
+.areas-bar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.areas {
+  display: flex;
+  gap: 8px;
+  padding: 12px clamp(16px, 4vw, 40px);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.area-chip {
+  flex: none;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.area-chip:hover {
+  color: var(--ink);
+  border-color: oklch(0.8 0.03 250);
+}
+
+.area-chip[aria-current='true'] {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--bg);
+}
+
+.area-count {
+  margin-left: 6px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.eyebrow-area:not(:empty)::before {
+  content: '· ';
+}
+
+.eyebrow-area {
+  color: var(--muted);
+}
+
+body.has-areas .tabs-bar {
+  top: var(--header-h);
+}
+
+@media (max-width: 700px) {
+  .header-btn .dirty-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+  }
+}
+
+.brand-title,
+.brand-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand {
+  flex: 1 1 auto;
+}
+
+/* ---------- Marca como link ---------- */
+a.brand {
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Página inicial ---------- */
+.home-view {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: clamp(40px, 6vw, 72px) clamp(16px, 4vw, 40px) 64px;
+}
+
+body.on-home {
+  background: var(--bg);
+}
+
+.home-hero {
+  position: relative;
+  max-width: 760px;
+}
+
+.home-title {
+  margin-top: 16px;
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  color: var(--primary-strong);
+}
+
+.home-subtitle {
+  margin-top: 14px;
+  font-size: clamp(18px, 2vw, 22px);
+  color: var(--muted);
+}
+
+.home-areas {
+  margin-top: clamp(36px, 5vw, 56px);
+}
+
+.home-areas-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.area-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 18px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.area-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: 22px 22px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--bg);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.area-card:hover {
+  border-color: oklch(0.78 0.06 252);
+  box-shadow: 0 18px 40px -26px oklch(0.3 0.08 252 / 0.35);
+  transform: translateY(-2px);
+}
+
+.area-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.area-card-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: var(--primary-pale);
+  color: var(--primary);
+}
+
+.area-card-icon .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.area-card-arrow {
+  color: var(--muted);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.area-card:hover .area-card-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.area-card-name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--primary-strong);
+}
+
+.area-card-count {
+  margin-top: 2px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.area-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.area-card-list li {
+  position: relative;
+  padding-left: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.area-card-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.area-card-list .more {
+  color: var(--muted);
+}
+
+.area-card-list .more::before {
+  background: var(--line);
+}
+
+/* ---------- Barra de áreas com "Início" ---------- */
+.areas {
+  align-items: center;
+}
+
+.areas-list {
+  display: flex;
+  gap: 8px;
+}
+
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding: 7px 12px 7px 8px;
+  border-radius: 999px;
+  color: var(--primary-strong);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.home-link:hover {
+  background: var(--surface);
+}
+
+.home-link .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.areas-divider {
+  flex: none;
+  width: 1px;
+  height: 22px;
+  background: var(--line);
+}
+
+@media (max-width: 960px) {
+  .home-hero {
+    margin: 0 auto;
+    text-align: center;
+  }
+  .home-hero .eyebrow-line {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .area-card:hover,
+  .area-card:hover .area-card-arrow {
+    transform: none;
+  }
+}
+
 </style>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Ir para o conteúdo principal</a>
 
     <header class="site-header">
-      <div class="brand">
+      <a class="brand" href="#/" aria-label="ABIHPEC — Portal de Indicadores, página inicial">
         <span class="brand-name">ABIHPEC</span>
         <span class="brand-divider" aria-hidden="true"></span>
         <span class="brand-text">
           <span class="brand-title">Portal de Indicadores</span>
           <span class="brand-subtitle">Inteligência para decisões</span>
         </span>
-      </div>
+      </a>
 
       <div class="header-actions">
+        <button type="button" class="btn btn-secondary header-btn" id="publish-btn" hidden>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 3v12" />
+            <path d="m7 10 5 5 5-5" />
+            <path d="M5 21h14" />
+          </svg>
+          <span class="btn-label">Baixar relatorios.json</span>
+          <span class="dirty-dot" id="dirty-dot" hidden aria-hidden="true"></span>
+        </button>
         <button type="button" class="btn btn-secondary header-btn" id="edit-report-btn" hidden>
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M12 20h9" />
@@ -1187,7 +1534,7 @@ input {
           </svg>
           <span class="btn-label">Editar atual</span>
         </button>
-        <button type="button" class="btn btn-primary header-btn" id="add-report-btn">
+        <button type="button" class="btn btn-primary header-btn" id="add-report-btn" hidden>
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M12 5v14" />
             <path d="M5 12h14" />
@@ -1196,6 +1543,15 @@ input {
         </button>
       </div>
     </header>
+
+    <div class="admin-banner" id="admin-banner" hidden>
+      <p>
+        <strong>Modo administradora.</strong>
+        <span id="admin-status">As alterações ficam só neste navegador até você baixar o
+          <code>relatorios.json</code> e enviá-lo ao GitHub.</span>
+      </p>
+      <button type="button" class="link-btn" id="discard-btn" hidden>Descartar alterações</button>
+    </div>
 
     <main id="main-content" tabindex="-1">
       <!-- Tela inicial (sem relatórios) -->
@@ -1207,7 +1563,7 @@ input {
             <span>Seus indicadores,</span>
             <span>em um só lugar.</span>
           </h1>
-          <p class="empty-text">
+          <p class="empty-text" id="empty-text">
             Adicione o link seguro do seu relatório para transformar esta página no ponto de acesso aos
             dados da sua equipe.
           </p>
@@ -1263,8 +1619,34 @@ input {
         </div>
       </section>
 
+      <!-- Página inicial com áreas -->
+      <section class="home-view" id="home-view" hidden aria-labelledby="home-title">
+        <div class="home-hero">
+          <span class="eyebrow-line" aria-hidden="true"></span>
+          <p class="eyebrow">PORTAL DE INDICADORES</p>
+          <h1 class="home-title" id="home-title">Indicadores ABIHPEC</h1>
+          <p class="home-subtitle">Seus dados em um só lugar.</p>
+        </div>
+        <div class="home-areas">
+          <h2 class="home-areas-title">Escolha uma área</h2>
+          <ul class="area-cards" id="area-cards"></ul>
+        </div>
+      </section>
+
       <!-- Tela com relatórios -->
       <section class="reports-view" id="reports-view" hidden aria-label="Relatórios cadastrados">
+        <nav class="areas-bar" id="areas-bar" aria-label="Áreas">
+          <div class="areas">
+            <a class="home-link" href="#/">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+              Início
+            </a>
+            <span class="areas-divider" aria-hidden="true"></span>
+            <div class="areas-list" id="report-areas"></div>
+          </div>
+        </nav>
         <nav class="tabs-bar" aria-label="Relatórios">
           <div class="tabs" id="report-tabs" role="tablist" aria-label="Relatórios cadastrados"></div>
         </nav>
@@ -1272,7 +1654,7 @@ input {
         <div class="report-area">
           <div class="report-toolbar">
             <div class="report-heading">
-              <p class="eyebrow eyebrow-small">RELATÓRIO ATIVO</p>
+              <p class="eyebrow eyebrow-small">RELATÓRIO ATIVO <span class="eyebrow-area" id="report-area-label"></span></p>
               <h1 class="report-name" id="report-name"></h1>
             </div>
             <button type="button" class="btn btn-secondary" id="reload-report-btn">
@@ -1369,6 +1751,26 @@ input {
             </div>
           </div>
 
+          <div class="field">
+            <label class="field-label" for="report-area">Área</label>
+            <div class="input-wrap input-plain">
+              <input
+                type="text"
+                id="report-area"
+                name="area"
+                maxlength="40"
+                autocomplete="off"
+                list="area-options"
+                placeholder="Ex.: Finanças"
+                aria-describedby="report-area-help"
+              />
+              <datalist id="area-options"></datalist>
+            </div>
+            <p class="field-help" id="report-area-help">
+              Escolha uma área existente ou digite uma nova. Em branco, fica em “Geral”.
+            </p>
+          </div>
+
           <div class="info-box">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6Z" />
@@ -1399,23 +1801,18 @@ input {
 
     <script type="module">
 /* =====================================================================
-   RELATÓRIOS FIXOS — aparecem para TODOS que abrirem o portal.
-   Para adicionar um relatório, copie uma linha { name: ..., url: ... },
-   cole abaixo da última (com vírgula no final) e troque o nome e o link.
-   Se esta lista ficar vazia ( [] ), o portal volta ao modo de cadastro
-   pelo navegador (botão "Adicionar relatório").
+   Portal de Indicadores ABIHPEC
+   - Visitantes: veem os relatórios publicados em relatorios.json.
+   - Administradora: abre o portal com ?admin no final do link, edita,
+     baixa o relatorios.json atualizado e envia ao GitHub.
    ===================================================================== */
-const FIXED_REPORTS = [
-  {
-    name: 'Cooperativas Possíveis',
-    url: 'https://app.powerbi.com/reportEmbed?reportId=d9fd6450-d442-492a-a4f3-13b7d55add1f&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84',
-  },
-];
 
-const FIXED_MODE = FIXED_REPORTS.length > 0;
-const STORAGE_KEY = 'abihpec-powerbi-reports';
+const PUBLISHED_FILE = './relatorios.json';
+const DRAFT_KEY = 'abihpec-powerbi-reports';
 const LEGACY_STORAGE_KEY = 'abihpec-powerbi-report';
+const DEFAULT_AREA = 'Geral';
 const TOAST_DURATION = 3200;
+const IS_ADMIN = new URLSearchParams(window.location.search).has('admin');
 
 const MESSAGES = {
   empty: 'Cole a URL de incorporação do relatório.',
@@ -1428,36 +1825,60 @@ const MESSAGES = {
   reloaded: 'Relatório recarregado.',
   pasteBlocked: 'Use Ctrl+V para colar o link neste campo.',
   storageBlocked:
-    'O navegador bloqueou o armazenamento local. Os relatórios não serão mantidos após fechar a página.',
+    'O navegador bloqueou o armazenamento local. As alterações não serão mantidas após fechar a página.',
+  downloaded: 'Arquivo baixado. Envie-o ao GitHub para publicar.',
+  discarded: 'Alterações descartadas.',
+  loadError: 'Não foi possível carregar a lista de relatórios. Tente recarregar a página.',
+  noReports: 'Ainda não há relatórios publicados neste portal.',
+  adminEmpty:
+    'Adicione o link seguro do seu relatório para transformar esta página no ponto de acesso aos dados da sua equipe.',
 };
 
 /* ---------- Elementos ---------- */
+const $ = (id) => document.getElementById(id);
 const els = {
-  addBtn: document.getElementById('add-report-btn'),
-  editBtn: document.getElementById('edit-report-btn'),
-  emptyState: document.getElementById('empty-state'),
-  reportsView: document.getElementById('reports-view'),
-  tabs: document.getElementById('report-tabs'),
-  reportName: document.getElementById('report-name'),
-  reloadBtn: document.getElementById('reload-report-btn'),
-  iframe: document.getElementById('report-iframe'),
-  skeleton: document.getElementById('report-skeleton'),
-  dialog: document.getElementById('report-dialog'),
-  form: document.getElementById('report-form'),
-  dialogTitle: document.getElementById('dialog-title'),
-  closeBtn: document.getElementById('close-dialog-btn'),
-  cancelBtn: document.getElementById('cancel-dialog-btn'),
-  removeBtn: document.getElementById('remove-report-btn'),
-  submitBtn: document.getElementById('submit-report-btn'),
-  urlInput: document.getElementById('report-url'),
-  nameInput: document.getElementById('report-title'),
-  urlError: document.getElementById('report-url-error'),
-  pasteBtn: document.getElementById('paste-btn'),
-  toast: document.getElementById('toast'),
+  addBtn: $('add-report-btn'),
+  editBtn: $('edit-report-btn'),
+  publishBtn: $('publish-btn'),
+  dirtyDot: $('dirty-dot'),
+  adminBanner: $('admin-banner'),
+  discardBtn: $('discard-btn'),
+  emptyState: $('empty-state'),
+  homeView: $('home-view'),
+  areaCards: $('area-cards'),
+  emptyText: $('empty-text'),
+  reportsView: $('reports-view'),
+  areasBar: $('areas-bar'),
+  areas: $('report-areas'),
+  tabs: $('report-tabs'),
+  reportName: $('report-name'),
+  reportAreaLabel: $('report-area-label'),
+  reloadBtn: $('reload-report-btn'),
+  iframe: $('report-iframe'),
+  skeleton: $('report-skeleton'),
+  frame: $('report-panel'),
+  dialog: $('report-dialog'),
+  form: $('report-form'),
+  dialogTitle: $('dialog-title'),
+  closeBtn: $('close-dialog-btn'),
+  cancelBtn: $('cancel-dialog-btn'),
+  removeBtn: $('remove-report-btn'),
+  submitBtn: $('submit-report-btn'),
+  urlInput: $('report-url'),
+  nameInput: $('report-title'),
+  areaInput: $('report-area'),
+  areaOptions: $('area-options'),
+  urlError: $('report-url-error'),
+  pasteBtn: $('paste-btn'),
+  toast: $('toast'),
 };
 
 /* ---------- Estado ---------- */
 let state = { reports: [], activeId: null };
+let route = { view: 'home', area: null };
+const lastByArea = new Map();
+let published = { reports: [] };
+let dirty = false;
 let dialogMode = 'create';
 let toastTimer = null;
 let storageWarningShown = false;
@@ -1470,13 +1891,15 @@ function createId() {
   return `r-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+function cleanText(value, max) {
+  return typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
+}
+
 function showToast(message) {
   els.toast.textContent = message;
   els.toast.classList.add('is-visible');
   window.clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => {
-    els.toast.classList.remove('is-visible');
-  }, TOAST_DURATION);
+  toastTimer = window.setTimeout(() => els.toast.classList.remove('is-visible'), TOAST_DURATION);
 }
 
 function warnStorageBlocked() {
@@ -1492,10 +1915,6 @@ function extractIframeSrc(raw) {
   return frame ? (frame.getAttribute('src') || '').trim() : '';
 }
 
-/**
- * Valida e normaliza uma URL do Power BI.
- * Retorna { ok: true, url } ou { ok: false, error }.
- */
 function validateEmbedUrl(rawValue) {
   let value = (rawValue || '').trim();
   if (!value) return { ok: false, error: MESSAGES.empty };
@@ -1517,15 +1936,12 @@ function validateEmbedUrl(rawValue) {
   if (parsed.protocol !== 'https:' || !validHost || parsed.username || parsed.password || parsed.port) {
     return { ok: false, error: MESSAGES.domain };
   }
-
   if (!/reportembed|\/view/i.test(parsed.pathname)) {
     return { ok: false, error: MESSAGES.path };
   }
-
   return { ok: true, url: parsed.href };
 }
 
-/* ---------- Persistência ---------- */
 function sanitizeReports(list) {
   if (!Array.isArray(list)) return [];
   const seen = new Set();
@@ -1533,192 +1949,368 @@ function sanitizeReports(list) {
   list.forEach((item, index) => {
     if (!item || typeof item !== 'object') return;
     const check = validateEmbedUrl(String(item.url || ''));
-    if (!check.ok) return;
-    let id = typeof item.id === 'string' && item.id ? item.id : createId();
+    if (!check.ok) {
+      console.error(`Relatório ${index + 1} ignorado: ${check.error}`);
+      return;
+    }
+    let id = cleanText(item.id, 80) || createId();
     if (seen.has(id)) id = createId();
     seen.add(id);
-    const name =
-      typeof item.name === 'string' && item.name.trim()
-        ? item.name.trim().slice(0, 70)
-        : `Relatório ${index + 1}`;
-    result.push({ id, url: check.url, name });
+    result.push({
+      id,
+      url: check.url,
+      name: cleanText(item.name, 70) || `Relatório ${index + 1}`,
+      area: cleanText(item.area, 40) || DEFAULT_AREA,
+    });
   });
   return result;
 }
 
-function saveState() {
-  if (FIXED_MODE) return true;
+/* ---------- Dados publicados ---------- */
+async function loadPublished() {
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    return true;
+    const response = await fetch(PUBLISHED_FILE, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    return { reports: sanitizeReports(data && data.reports), error: false };
   } catch (error) {
-    console.error('Não foi possível salvar os relatórios no navegador.', error);
-    warnStorageBlocked();
-    return false;
+    console.error('Não foi possível carregar relatorios.json.', error);
+    return { reports: [], error: true };
   }
 }
 
-function migrateLegacy() {
-  const legacyRaw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
-  if (legacyRaw === null) return null;
-
-  let legacy = null;
+/* ---------- Rascunho da administradora ---------- */
+function readDraft() {
   try {
-    legacy = JSON.parse(legacyRaw);
-  } catch (error) {
-    console.error('Formato antigo de relatório inválido; não foi possível migrar.', error);
-  }
-
-  const migrated = { reports: [], activeId: null };
-  if (legacy && typeof legacy === 'object') {
-    const check = validateEmbedUrl(String(legacy.url || ''));
-    if (check.ok) {
-      const name =
-        typeof legacy.name === 'string' && legacy.name.trim()
-          ? legacy.name.trim().slice(0, 70)
-          : 'Relatório 1';
-      const report = { id: createId(), url: check.url, name };
-      migrated.reports.push(report);
-      migrated.activeId = report.id;
-    }
-  }
-
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
-  window.localStorage.removeItem(LEGACY_STORAGE_KEY);
-  return migrated;
-}
-
-function loadFixedState() {
-  const reports = [];
-  FIXED_REPORTS.forEach((item, index) => {
-    const check = validateEmbedUrl(String((item && item.url) || ''));
-    if (!check.ok) {
-      console.error(`Relatório fixo ${index + 1} ignorado: ${check.error}`);
-      return;
-    }
-    const name =
-      item && typeof item.name === 'string' && item.name.trim()
-        ? item.name.trim().slice(0, 70)
-        : `Relatório ${index + 1}`;
-    reports.push({ id: `fixo-${index + 1}`, url: check.url, name });
-  });
-  return { reports, activeId: reports[0] ? reports[0].id : null };
-}
-
-function loadState() {
-  if (FIXED_MODE) return loadFixedState();
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    let data = null;
-
+    const raw = window.localStorage.getItem(DRAFT_KEY);
     if (raw !== null) {
-      try {
-        data = JSON.parse(raw);
-      } catch (error) {
-        console.error('Dados de relatórios corrompidos no navegador.', error);
-      }
-    } else {
-      data = migrateLegacy();
+      const data = JSON.parse(raw);
+      return { reports: sanitizeReports(data && data.reports), activeId: data && data.activeId };
     }
-
-    const reports = sanitizeReports(data && data.reports);
-    const activeExists = data && reports.some((r) => r.id === data.activeId);
-    return {
-      reports,
-      activeId: activeExists ? data.activeId : reports[0] ? reports[0].id : null,
-    };
+    const legacy = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacy !== null) {
+      window.localStorage.removeItem(LEGACY_STORAGE_KEY);
+      const old = JSON.parse(legacy);
+      return { reports: sanitizeReports([old]), activeId: null };
+    }
   } catch (error) {
-    console.error('Não foi possível acessar o armazenamento do navegador.', error);
+    console.error('Não foi possível ler o rascunho salvo no navegador.', error);
+  }
+  return null;
+}
+
+function saveDraft() {
+  if (!IS_ADMIN) return;
+  try {
+    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.error('Não foi possível salvar o rascunho no navegador.', error);
     warnStorageBlocked();
-    return { reports: [], activeId: null };
   }
 }
 
-/* ---------- Renderização ---------- */
+function clearDraft() {
+  try {
+    window.localStorage.removeItem(DRAFT_KEY);
+  } catch (error) {
+    console.error('Não foi possível limpar o rascunho.', error);
+  }
+}
+
+function serialize(reports) {
+  return JSON.stringify(
+    { reports: reports.map(({ id, name, area, url }) => ({ id, name, area, url })) },
+    null,
+    2,
+  );
+}
+
+function updateDirty() {
+  dirty = serialize(state.reports) !== serialize(published.reports);
+  els.dirtyDot.hidden = !dirty;
+  els.discardBtn.hidden = !dirty;
+}
+
+function markChanged() {
+  saveDraft();
+  updateDirty();
+}
+
+/* ---------- Áreas ---------- */
+function getAreas() {
+  const areas = [];
+  state.reports.forEach((r) => {
+    if (!areas.includes(r.area)) areas.push(r.area);
+  });
+  return areas;
+}
+
 function getActiveReport() {
   return state.reports.find((r) => r.id === state.activeId) || null;
 }
 
+/* ---------- Navegação (#/ e #/area/Nome) ---------- */
+function parseRoute() {
+  const match = window.location.hash.match(/^#\/area\/(.+)$/);
+  if (!match) return { view: 'home', area: null };
+  try {
+    return { view: 'area', area: decodeURIComponent(match[1]) };
+  } catch {
+    return { view: 'home', area: null };
+  }
+}
+
+function areaHref(area) {
+  return `#/area/${encodeURIComponent(area)}`;
+}
+
+function goTo(area) {
+  const target = area ? areaHref(area) : '#/';
+  if (window.location.hash === target) {
+    route = parseRoute();
+    render();
+  } else {
+    window.location.hash = target;
+  }
+}
+
+function syncActiveWithRoute() {
+  if (route.view !== 'area') return;
+  const inArea = state.reports.filter((r) => r.area === route.area);
+  if (inArea.length === 0) {
+    route = { view: 'home', area: null };
+    if (window.location.hash) history.replaceState(null, '', window.location.pathname + window.location.search + '#/');
+    return;
+  }
+  const current = getActiveReport();
+  if (current && current.area === route.area) return;
+  const remembered = lastByArea.get(route.area);
+  state.activeId = inArea.some((r) => r.id === remembered) ? remembered : inArea[0].id;
+}
+
+/* ---------- Página inicial ---------- */
+const AREA_ICON =
+  'M3 3v18h18|M7 15l4-4 3 3 5-6';
+
+function makeIcon(paths) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('class', 'icon');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  paths.split('|').forEach((d) => {
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', d);
+    svg.append(path);
+  });
+  return svg;
+}
+
+function renderHome() {
+  els.areaCards.replaceChildren();
+  getAreas().forEach((area) => {
+    const reports = state.reports.filter((r) => r.area === area);
+    const item = document.createElement('li');
+    const card = document.createElement('a');
+    card.className = 'area-card';
+    card.href = areaHref(area);
+
+    const top = document.createElement('div');
+    top.className = 'area-card-top';
+    const icon = document.createElement('span');
+    icon.className = 'area-card-icon';
+    icon.append(makeIcon(AREA_ICON));
+    const arrow = makeIcon('M5 12h14|m13 6 6 6-6 6');
+    arrow.classList.add('area-card-arrow');
+    top.append(icon, arrow);
+
+    const textWrap = document.createElement('div');
+    const name = document.createElement('p');
+    name.className = 'area-card-name';
+    name.textContent = area;
+    const count = document.createElement('p');
+    count.className = 'area-card-count';
+    count.textContent = `${reports.length} relatório${reports.length > 1 ? 's' : ''}`;
+    textWrap.append(name, count);
+
+    const list = document.createElement('ul');
+    list.className = 'area-card-list';
+    reports.slice(0, 3).forEach((r) => {
+      const li = document.createElement('li');
+      li.textContent = r.name;
+      list.append(li);
+    });
+    if (reports.length > 3) {
+      const li = document.createElement('li');
+      li.className = 'more';
+      li.textContent = `+ ${reports.length - 3} outro${reports.length - 3 > 1 ? 's' : ''}`;
+      list.append(li);
+    }
+
+    card.append(top, textWrap, list);
+    item.append(card);
+    els.areaCards.append(item);
+  });
+}
+
+/* ---------- Renderização ---------- */
+function handleIframeLoad(event) {
+  const frame = event.currentTarget;
+  if (frame !== els.iframe || !frame.getAttribute('src')) return;
+  els.skeleton.hidden = true;
+  frame.classList.remove('is-loading');
+}
+
+/* Troca o iframe por um novo para não criar entradas no histórico do
+   navegador (assim o botão "Voltar" volta de página, não de relatório). */
 function loadIframe(url, force = false) {
   const check = validateEmbedUrl(url);
   if (!check.ok) return;
   if (!force && els.iframe.getAttribute('src') === check.url) return;
+  const frame = document.createElement('iframe');
+  frame.id = 'report-iframe';
+  frame.title = els.iframe.title;
+  frame.setAttribute('allowfullscreen', '');
+  frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+  frame.className = 'is-loading';
+  frame.addEventListener('load', handleIframeLoad);
+  frame.src = check.url;
   els.skeleton.hidden = false;
-  els.iframe.classList.add('is-loading');
-  els.iframe.src = check.url;
+  els.iframe.replaceWith(frame);
+  els.iframe = frame;
 }
 
-function renderTabs() {
-  els.tabs.replaceChildren();
-  state.reports.forEach((report) => {
-    const isActive = report.id === state.activeId;
-    const tab = document.createElement('button');
-    tab.type = 'button';
-    tab.className = 'tab';
-    tab.id = `tab-${report.id}`;
-    tab.setAttribute('role', 'tab');
-    tab.setAttribute('aria-selected', String(isActive));
-    tab.setAttribute('aria-controls', 'report-panel');
-    tab.tabIndex = isActive ? 0 : -1;
-    tab.dataset.id = report.id;
-    tab.textContent = report.name;
-    tab.title = report.name;
-    els.tabs.append(tab);
+function renderAreas(active) {
+  const areas = getAreas();
+  document.body.classList.add('has-areas');
+  els.areas.replaceChildren();
+
+  areas.forEach((area) => {
+    const count = state.reports.filter((r) => r.area === area).length;
+    const chip = document.createElement('a');
+    chip.href = areaHref(area);
+    chip.className = 'area-chip';
+    chip.dataset.area = area;
+    chip.setAttribute('aria-current', String(area === active.area));
+    chip.append(document.createTextNode(area));
+    const badge = document.createElement('span');
+    badge.className = 'area-count';
+    badge.textContent = String(count);
+    badge.setAttribute('aria-label', `${count} relatório${count > 1 ? 's' : ''}`);
+    chip.append(badge);
+    els.areas.append(chip);
   });
+}
+
+function renderTabs(active) {
+  els.tabs.replaceChildren();
+  state.reports
+    .filter((r) => r.area === active.area)
+    .forEach((report) => {
+      const isActive = report.id === active.id;
+      const tab = document.createElement('button');
+      tab.type = 'button';
+      tab.className = 'tab';
+      tab.id = `tab-${report.id}`;
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-selected', String(isActive));
+      tab.setAttribute('aria-controls', 'report-panel');
+      tab.tabIndex = isActive ? 0 : -1;
+      tab.dataset.id = report.id;
+      tab.textContent = report.name;
+      tab.title = report.name;
+      els.tabs.append(tab);
+    });
 
   const activeTab = els.tabs.querySelector('[aria-selected="true"]');
   if (activeTab) {
     activeTab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    els.reportsView.querySelector('.report-frame').setAttribute('aria-labelledby', activeTab.id);
+    els.frame.setAttribute('aria-labelledby', activeTab.id);
   }
+}
+
+function renderAreaOptions() {
+  els.areaOptions.replaceChildren();
+  getAreas().forEach((area) => {
+    const option = document.createElement('option');
+    option.value = area;
+    els.areaOptions.append(option);
+  });
 }
 
 function render() {
   const hasReports = state.reports.length > 0;
+  syncActiveWithRoute();
+  const onHome = hasReports && route.view === 'home';
+  const onArea = hasReports && route.view === 'area';
+
   els.emptyState.hidden = hasReports;
-  els.reportsView.hidden = !hasReports;
-  els.editBtn.hidden = !hasReports || FIXED_MODE;
-  els.addBtn.hidden = FIXED_MODE;
-  document.body.classList.toggle('has-reports', hasReports);
+  els.homeView.hidden = !onHome;
+  els.reportsView.hidden = !onArea;
+  els.addBtn.hidden = !IS_ADMIN;
+  els.publishBtn.hidden = !IS_ADMIN;
+  els.editBtn.hidden = !IS_ADMIN || !onArea;
+  document.body.classList.toggle('has-reports', onArea);
+  document.body.classList.toggle('on-home', !onArea);
 
   if (!hasReports) {
     els.iframe.removeAttribute('src');
     els.tabs.replaceChildren();
+    els.areas.replaceChildren();
+    document.title = 'Portal de Indicadores | ABIHPEC';
+    return;
+  }
+
+  if (onHome) {
+    renderHome();
+    document.title = 'Indicadores ABIHPEC';
     return;
   }
 
   const active = getActiveReport();
-  renderTabs();
+  lastByArea.set(active.area, active.id);
+  renderAreas(active);
+  renderTabs(active);
   els.reportName.textContent = active.name;
+  els.reportAreaLabel.textContent = active.area.toUpperCase();
   els.iframe.title = active.name;
+  document.title = `${active.area} | Indicadores ABIHPEC`;
   loadIframe(active.url);
 }
 
 function setActive(id, focusTab = false) {
-  if (!state.reports.some((r) => r.id === id) || id === state.activeId) return;
-  state.activeId = id;
-  saveState();
-  render();
+  if (!state.reports.some((r) => r.id === id)) return;
+  if (id !== state.activeId) {
+    state.activeId = id;
+    saveDraft();
+    render();
+  }
   if (focusTab) {
     const tab = document.getElementById(`tab-${id}`);
     if (tab) tab.focus();
   }
 }
 
-/* ---------- Painel ---------- */
+function navigateToReport(report) {
+  state.activeId = report.id;
+  lastByArea.set(report.area, report.id);
+  goTo(report.area);
+}
+
+/* ---------- Painel (somente administradora) ---------- */
 function setUrlError(message) {
   els.urlError.textContent = message;
-  if (message) {
-    els.urlInput.setAttribute('aria-invalid', 'true');
-  } else {
-    els.urlInput.removeAttribute('aria-invalid');
-  }
+  if (message) els.urlInput.setAttribute('aria-invalid', 'true');
+  else els.urlInput.removeAttribute('aria-invalid');
 }
 
 function openDialog(mode) {
+  if (!IS_ADMIN) return;
   dialogMode = mode;
   setUrlError('');
   els.form.reset();
+  renderAreaOptions();
 
   if (mode === 'edit') {
     const active = getActiveReport();
@@ -1728,10 +2320,13 @@ function openDialog(mode) {
     els.removeBtn.hidden = false;
     els.urlInput.value = active.url;
     els.nameInput.value = active.name;
+    els.areaInput.value = active.area;
   } else {
+    const active = getActiveReport();
     els.dialogTitle.textContent = 'Adicionar relatório';
     els.submitBtn.textContent = 'Adicionar e abrir';
     els.removeBtn.hidden = true;
+    if (active) els.areaInput.value = active.area;
   }
 
   els.dialog.classList.remove('is-closing');
@@ -1741,8 +2336,7 @@ function openDialog(mode) {
 
 function closeDialog() {
   if (!els.dialog.open) return;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     els.dialog.close();
     return;
   }
@@ -1762,16 +2356,18 @@ function handleSubmit(event) {
     return;
   }
   setUrlError('');
-  const typedName = els.nameInput.value.trim().slice(0, 70);
+  const typedName = cleanText(els.nameInput.value, 70);
+  const area = cleanText(els.areaInput.value, 40) || DEFAULT_AREA;
 
   if (dialogMode === 'edit') {
     const active = getActiveReport();
     if (!active) return;
     active.url = check.url;
     active.name = typedName || active.name;
-    saveState();
+    active.area = area;
+    markChanged();
     closeDialog();
-    render();
+    navigateToReport(active);
     loadIframe(active.url, true);
     showToast(MESSAGES.updated);
     return;
@@ -1781,31 +2377,32 @@ function handleSubmit(event) {
     id: createId(),
     url: check.url,
     name: typedName || `Relatório ${state.reports.length + 1}`,
+    area,
   };
   state.reports.push(report);
   state.activeId = report.id;
-  saveState();
+  markChanged();
   closeDialog();
-  render();
+  navigateToReport(report);
   showToast(MESSAGES.added);
 }
 
 function handleRemove() {
   const index = state.reports.findIndex((r) => r.id === state.activeId);
   if (index === -1) return;
+  const area = state.reports[index].area;
   state.reports.splice(index, 1);
 
-  if (state.reports.length === 0) {
-    state.activeId = null;
-  } else if (index < state.reports.length) {
-    state.activeId = state.reports[index].id; // próximo
-  } else {
-    state.activeId = state.reports[index - 1].id; // anterior
-  }
+  const sameArea = state.reports.filter((r) => r.area === area);
+  const after = state.reports.slice(index).find((r) => r.area === area);
+  const next = after || sameArea[sameArea.length - 1];
+  state.activeId = next ? next.id : null;
+  lastByArea.delete(area);
 
-  saveState();
+  markChanged();
   closeDialog();
-  render();
+  if (next) render();
+  else goTo(null);
   showToast(MESSAGES.removed);
   if (state.reports.length === 0) els.addBtn.focus();
 }
@@ -1815,8 +2412,7 @@ async function handlePaste() {
     if (!navigator.clipboard || typeof navigator.clipboard.readText !== 'function') {
       throw new Error('Clipboard API indisponível');
     }
-    const text = await navigator.clipboard.readText();
-    els.urlInput.value = text.trim();
+    els.urlInput.value = (await navigator.clipboard.readText()).trim();
     setUrlError('');
     els.urlInput.focus();
   } catch {
@@ -1825,7 +2421,28 @@ async function handlePaste() {
   }
 }
 
-/* ---------- Abas por teclado ---------- */
+function handleDownload() {
+  const blob = new Blob([serialize(state.reports) + '\n'], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'relatorios.json';
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  showToast(MESSAGES.downloaded);
+}
+
+function handleDiscard() {
+  state = { reports: published.reports.map((r) => ({ ...r })), activeId: null };
+  clearDraft();
+  updateDirty();
+  lastByArea.clear();
+  goTo(null);
+  showToast(MESSAGES.discarded);
+}
+
+/* ---------- Teclado nas abas ---------- */
 function handleTabKeydown(event) {
   const tabs = Array.from(els.tabs.querySelectorAll('[role="tab"]'));
   const current = tabs.indexOf(document.activeElement);
@@ -1843,6 +2460,8 @@ function handleTabKeydown(event) {
 /* ---------- Eventos ---------- */
 els.addBtn.addEventListener('click', () => openDialog('create'));
 els.editBtn.addEventListener('click', () => openDialog('edit'));
+els.publishBtn.addEventListener('click', handleDownload);
+els.discardBtn.addEventListener('click', handleDiscard);
 els.closeBtn.addEventListener('click', closeDialog);
 els.cancelBtn.addEventListener('click', closeDialog);
 els.removeBtn.addEventListener('click', handleRemove);
@@ -1856,11 +2475,15 @@ els.dialog.addEventListener('cancel', (event) => {
 els.dialog.addEventListener('click', (event) => {
   if (event.target === els.dialog) closeDialog();
 });
-
 els.urlInput.addEventListener('input', () => {
   if (els.urlInput.hasAttribute('aria-invalid')) setUrlError('');
 });
 
+window.addEventListener('hashchange', () => {
+  route = parseRoute();
+  render();
+  window.scrollTo(0, 0);
+});
 els.tabs.addEventListener('click', (event) => {
   const tab = event.target.closest('[role="tab"]');
   if (tab) setActive(tab.dataset.id, true);
@@ -1874,15 +2497,34 @@ els.reloadBtn.addEventListener('click', () => {
   showToast(MESSAGES.reloaded);
 });
 
-els.iframe.addEventListener('load', () => {
-  if (!els.iframe.getAttribute('src')) return;
-  els.skeleton.hidden = true;
-  els.iframe.classList.remove('is-loading');
+els.iframe.addEventListener('load', handleIframeLoad);
+
+window.addEventListener('beforeunload', (event) => {
+  if (IS_ADMIN && dirty) event.preventDefault();
 });
 
 /* ---------- Inicialização ---------- */
-state = loadState();
-render();
+async function init() {
+  const result = await loadPublished();
+  published = { reports: result.reports };
+
+  if (IS_ADMIN) {
+    els.adminBanner.hidden = false;
+    const draft = readDraft();
+    state = draft
+      ? { reports: draft.reports, activeId: draft.activeId }
+      : { reports: published.reports.map((r) => ({ ...r })), activeId: null };
+    els.emptyText.textContent = MESSAGES.adminEmpty;
+    updateDirty();
+  } else {
+    state = { reports: published.reports, activeId: null };
+    els.emptyText.textContent = result.error ? MESSAGES.loadError : MESSAGES.noReports;
+  }
+  route = parseRoute();
+  render();
+}
+
+init();
 
 </script>
   </body>
