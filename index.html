@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Portal de Indicadores ABIHPEC — acesso centralizado aos relatórios do Power BI." />
-    <title>Portal de Indicadores | ABIHPEC</title>
+    <meta name="description" content="Indicadores ABIHPEC — seus dados em um só lugar." />
+    <meta name="theme-color" content="#0f2350" />
+    <title>Indicadores ABIHPEC</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -12,28 +13,49 @@
       rel="stylesheet"
     />
     <style>
+/* =====================================================================
+   Cores da marca — altere aqui para ajustar a identidade visual
+   ===================================================================== */
 :root {
+  --navy-950: oklch(0.19 0.06 256);
+  --navy-900: oklch(0.245 0.075 254);
+  --navy-800: oklch(0.30 0.105 252);
+  --blue-700: oklch(0.39 0.13 252);
+  --blue-500: oklch(0.55 0.14 250);
+  --blue-300: oklch(0.78 0.08 245);
+  --blue-100: oklch(0.94 0.035 252);
+  --coral: oklch(0.653 0.185 33.5);
+  --coral-deep: oklch(0.54 0.17 33);
+  --coral-100: oklch(0.96 0.03 35);
+
   --bg: oklch(1 0 0);
   --surface: oklch(0.975 0.008 250);
   --surface-strong: oklch(0.945 0.015 250);
   --ink: oklch(0.245 0.045 252);
   --muted: oklch(0.47 0.035 252);
-  --line: oklch(0.88 0.018 250);
-  --primary: oklch(0.39 0.13 252);
-  --primary-strong: oklch(0.30 0.105 252);
-  --primary-pale: oklch(0.94 0.035 252);
-  --accent: oklch(0.653 0.185 33.5);
-  --success: oklch(0.50 0.13 155);
+  --line: oklch(0.9 0.016 250);
+  --line-strong: oklch(0.82 0.03 250);
   --error: oklch(0.48 0.18 27);
   --error-pale: oklch(0.96 0.025 27);
+  --success: oklch(0.52 0.13 155);
+  --warning: oklch(0.72 0.15 70);
 
-  --header-h: 76px;
+  --primary: var(--blue-700);
+  --primary-strong: var(--navy-800);
+
+  --topbar-h: 64px;
   --radius-sm: 8px;
   --radius-md: 10px;
   --radius-lg: 12px;
-  --radius-xl: 14px;
-  --focus: 0 0 0 3px var(--bg), 0 0 0 5px var(--primary);
+  --radius-xl: 16px;
+  --shadow-card: 0 1px 2px oklch(0.25 0.06 252 / 0.06), 0 12px 32px -18px oklch(0.25 0.06 252 / 0.28);
+  --shadow-lift: 0 2px 4px oklch(0.25 0.06 252 / 0.06), 0 26px 48px -22px oklch(0.25 0.06 252 / 0.4);
+  --focus: 0 0 0 3px var(--bg), 0 0 0 5px var(--blue-500);
   --font: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --page-x: clamp(16px, 4vw, 48px);
+  --max: 1280px;
+  --max-outer: calc(var(--max) + 2 * var(--page-x));
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 *,
@@ -44,22 +66,29 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--topbar-h) + 16px);
 }
 
 body {
-  margin: 0;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+  margin: 0;
   font-family: var(--font);
   font-size: 16px;
   line-height: 1.5;
   color: var(--ink);
-  background: var(--bg);
+  background: var(--surface);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-body.has-reports {
-  background: var(--surface);
+main {
+  flex: 1;
+}
+
+main:focus {
+  outline: none;
 }
 
 [hidden] {
@@ -68,7 +97,8 @@ body.has-reports {
 
 h1,
 h2,
-p {
+p,
+ul {
   margin: 0;
 }
 
@@ -78,12 +108,28 @@ input {
   color: inherit;
 }
 
+a {
+  color: inherit;
+}
+
 :focus-visible {
   outline: none;
   box-shadow: var(--focus);
 }
 
-/* ---------- Ícones ---------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .icon {
   width: 18px;
   height: 18px;
@@ -95,7 +141,6 @@ input {
   stroke-width: 1.8;
 }
 
-/* ---------- Skip link ---------- */
 .skip-link {
   position: absolute;
   top: 10px;
@@ -103,11 +148,11 @@ input {
   z-index: 100;
   padding: 10px 16px;
   border-radius: var(--radius-sm);
-  background: var(--primary-strong);
-  color: var(--bg);
+  background: var(--bg);
+  color: var(--navy-900);
   font-weight: 600;
   text-decoration: none;
-  transform: translateY(-160%);
+  transform: translateY(-200%);
   transition: transform 0.15s ease;
 }
 
@@ -115,8 +160,17 @@ input {
   transform: translateY(0);
 }
 
+.eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-700);
+}
+
 /* ---------- Botões ---------- */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -129,28 +183,72 @@ input {
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0 13px;
+  font-size: 13.5px;
+}
+
+.btn-sm .icon {
+  width: 16px;
+  height: 16px;
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: var(--blue-700);
   color: var(--bg);
 }
 
 .btn-primary:hover {
-  background: var(--primary-strong);
+  background: var(--navy-800);
 }
 
 .btn-secondary {
   background: var(--bg);
-  border-color: var(--line);
-  color: var(--primary-strong);
+  border-color: var(--line-strong);
+  color: var(--navy-800);
 }
 
 .btn-secondary:hover {
   background: var(--surface);
-  border-color: oklch(0.8 0.03 250);
+  border-color: var(--blue-300);
+}
+
+.btn-quiet {
+  background: transparent;
+  color: var(--muted);
+}
+
+.btn-quiet:hover {
+  background: var(--surface-strong);
+  color: var(--ink);
+}
+
+.btn-ghost-light {
+  min-height: 38px;
+  padding: 0 14px;
+  border-color: oklch(1 0 0 / 0.22);
+  background: oklch(1 0 0 / 0.06);
+  color: var(--bg);
+  font-size: 13.5px;
+}
+
+.btn-ghost-light:hover {
+  background: oklch(1 0 0 / 0.14);
+  border-color: oklch(1 0 0 / 0.4);
+}
+
+.btn-ghost-light:focus-visible {
+  box-shadow: 0 0 0 2px var(--navy-900), 0 0 0 4px var(--blue-300);
 }
 
 .btn-danger {
@@ -163,6 +261,12 @@ input {
   background: oklch(0.93 0.045 27);
 }
 
+.btn[aria-disabled='true'],
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .icon-btn {
   display: inline-grid;
   place-items: center;
@@ -173,340 +277,755 @@ input {
   background: var(--bg);
   color: var(--ink);
   cursor: pointer;
-  transition: background-color 0.15s ease;
 }
 
 .icon-btn:hover {
   background: var(--surface);
 }
 
-/* ---------- Cabeçalho ---------- */
-.site-header {
+.link-btn {
+  padding: 6px 4px;
+  border: 0;
+  background: none;
+  color: var(--error);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.dirty-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--coral);
+  box-shadow: 0 0 0 3px var(--coral-100);
+}
+
+/* ---------- Barra superior ---------- */
+.topbar {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  height: var(--header-h);
-  padding: 0 clamp(16px, 4vw, 40px);
-  background: var(--bg);
-  border-bottom: 1px solid var(--line);
+  height: var(--topbar-h);
+  padding: 0 var(--page-x);
+  background: var(--navy-950);
+  color: var(--bg);
+  border-bottom: 1px solid oklch(1 0 0 / 0.08);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   min-width: 0;
+  padding: 6px 4px;
+  margin-left: -4px;
+  border-radius: var(--radius-sm);
+  color: inherit;
+  text-decoration: none;
 }
 
-.brand-name {
-  font-size: 23px;
+.brand:focus-visible {
+  box-shadow: 0 0 0 2px var(--blue-300);
+}
+
+.brand-mark {
+  font-size: 21px;
   font-weight: 800;
   letter-spacing: 0.01em;
-  color: var(--primary);
 }
 
-.brand-divider {
+.brand-sep {
   width: 1px;
-  height: 32px;
-  background: var(--line);
+  height: 22px;
+  background: oklch(1 0 0 / 0.25);
 }
 
-.brand-text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  line-height: 1.25;
-}
-
-.brand-title {
+.brand-product {
+  position: relative;
   font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
+  font-weight: 500;
+  color: oklch(1 0 0 / 0.82);
   white-space: nowrap;
 }
 
-.brand-subtitle {
-  font-size: 12.5px;
-  color: var(--muted);
-  white-space: nowrap;
+.brand-product::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--coral);
 }
 
-.header-actions {
+.topbar-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: none;
 }
 
-/* ---------- Tela inicial ---------- */
-.empty-state {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+.adm-badge {
+  display: inline-flex;
   align-items: center;
-  gap: clamp(32px, 5vw, 72px);
-  max-width: 1320px;
-  min-height: calc(100vh - var(--header-h));
-  margin: 0 auto;
-  padding: clamp(40px, 6vw, 80px) clamp(16px, 4vw, 40px);
-  overflow: hidden;
-}
-
-.empty-content {
-  position: relative;
-  z-index: 1;
-}
-
-.eyebrow-line {
-  display: block;
-  width: 44px;
-  height: 3px;
-  margin-bottom: 18px;
-  border-radius: 2px;
-  background: var(--accent);
-}
-
-.eyebrow {
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.1);
   font-size: 12.5px;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--primary);
+  letter-spacing: 0.04em;
 }
 
-.eyebrow-small {
-  font-size: 11.5px;
-  letter-spacing: 0.12em;
+.adm-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--coral);
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.empty-title {
-  margin-top: 18px;
-  font-size: clamp(44px, 4.6vw, 78px);
-  font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  color: var(--primary-strong);
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 5px oklch(0.653 0.185 33.5 / 0.25);
+  }
 }
 
-.empty-title span {
-  display: block;
-  white-space: nowrap;
+/* ---------- Barra da administradora ---------- */
+.admin-bar {
+  position: sticky;
+  top: var(--topbar-h);
+  z-index: 25;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 6px 18px -14px oklch(0.25 0.06 252 / 0.35);
 }
 
-.empty-text {
-  max-width: 480px;
-  margin-top: 26px;
-  font-size: 18px;
-  line-height: 1.6;
+.admin-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  max-width: var(--max-outer);
+  margin: 0 auto;
+  padding: 10px var(--page-x);
+}
+
+.admin-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
   color: var(--muted);
 }
 
-/* ---------- Ilustração ---------- */
-.illustration-wrap {
-  position: relative;
-  perspective: 1600px;
+.admin-status strong {
+  color: var(--ink);
 }
 
-.illustration-wrap::before {
-  content: '';
+.admin-status-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.admin-status-dot.is-dirty {
+  background: var(--coral);
+}
+
+.admin-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Hero (página inicial) ---------- */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(48px, 7vw, 88px) var(--page-x) clamp(96px, 10vw, 128px);
+  background:
+    radial-gradient(120% 90% at 85% 10%, oklch(0.39 0.13 252 / 0.55), transparent 60%),
+    linear-gradient(160deg, var(--navy-950) 0%, var(--navy-900) 55%, var(--navy-800) 100%);
+  color: var(--bg);
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.hero-art {
   position: absolute;
-  inset: -18% -14%;
-  z-index: 0;
-  background: radial-gradient(closest-side, oklch(0.9 0.06 252 / 0.55), oklch(1 0 0 / 0));
+  right: max(-80px, calc((100vw - var(--max)) / 2 - 120px));
+  top: 50%;
+  width: min(62vw, 720px);
+  transform: translateY(-50%);
   pointer-events: none;
 }
 
-.illustration {
+.hero-art-dots circle,
+#hero-dots circle {
+  fill: oklch(1 0 0 / 0.14);
+}
+
+.hero-art-ring {
+  fill: none;
+  stroke: oklch(1 0 0 / 0.07);
+  stroke-width: 1.5;
+}
+
+.hero-art-bars rect {
+  fill: oklch(1 0 0 / 0.1);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: bar-grow 1.1s var(--ease) both;
+}
+
+.hero-art-bars rect.is-accent {
+  fill: oklch(0.653 0.185 33.5 / 0.55);
+}
+
+.hero-art-bars rect:nth-child(2) { animation-delay: 0.06s; }
+.hero-art-bars rect:nth-child(3) { animation-delay: 0.12s; }
+.hero-art-bars rect:nth-child(4) { animation-delay: 0.18s; }
+.hero-art-bars rect:nth-child(5) { animation-delay: 0.24s; }
+.hero-art-bars rect:nth-child(6) { animation-delay: 0.3s; }
+
+.hero-art-line {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 520;
+  stroke-dashoffset: 520;
+  animation: line-draw 1.4s 0.35s var(--ease) forwards;
+}
+
+.hero-art-points circle {
+  fill: var(--navy-900);
+  stroke: var(--coral);
+  stroke-width: 3;
+  opacity: 0;
+  animation: fade-in 0.4s 1.2s ease forwards;
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes line-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: oklch(0.82 0.09 35);
+  animation: rise 0.6s var(--ease) both;
+}
+
+.hero-eyebrow-line {
+  width: 32px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--coral);
+}
+
+.hero-title {
+  max-width: 12ch;
+  margin-top: 18px;
+  font-size: clamp(42px, 6.4vw, 84px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  animation: rise 0.7s 0.06s var(--ease) both;
+}
+
+.hero-subtitle {
+  margin-top: 18px;
+  font-size: clamp(18px, 2.1vw, 23px);
+  color: oklch(1 0 0 / 0.78);
+  animation: rise 0.7s 0.12s var(--ease) both;
+}
+
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 32px;
+  margin-top: 30px;
+  padding: 0;
+  list-style: none;
+  animation: rise 0.7s 0.18s var(--ease) both;
+}
+
+.hero-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 14px;
+  border-left: 2px solid oklch(1 0 0 / 0.18);
+}
+
+.hero-stats strong {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.hero-stats span {
+  font-size: 13px;
+  color: oklch(1 0 0 / 0.68);
+}
+
+.search {
   position: relative;
-  z-index: 1;
+  display: flex;
+  align-items: center;
+  width: min(100%, 520px);
+  margin-top: 30px;
+  animation: rise 0.7s 0.24s var(--ease) both;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.search input {
+  width: 100%;
+  height: 52px;
+  padding: 0 48px 0 46px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15.5px;
+  box-shadow: 0 18px 40px -20px oklch(0.1 0.05 256 / 0.6);
+  transition: box-shadow 0.15s ease;
+}
+
+.search input::placeholder {
+  color: oklch(0.58 0.025 252);
+}
+
+.search input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--coral), 0 18px 40px -20px oklch(0.1 0.05 256 / 0.6);
+}
+
+.search input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.search-kbd {
+  position: absolute;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  color: var(--muted);
+  font: 600 12px var(--font);
+  pointer-events: none;
+}
+
+.search input:not(:placeholder-shown) ~ .search-kbd {
+  display: none;
+}
+
+/* ---------- Corpo da página inicial ---------- */
+.home-body {
+  position: relative;
+  z-index: 2;
+  max-width: var(--max-outer);
+  margin: calc(-1 * clamp(56px, 6vw, 72px)) auto 0;
+  padding: 0 var(--page-x) 64px;
+}
+
+.home-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: oklch(1 0 0 / 0.8);
+}
+
+.section-hint {
+  font-size: 13.5px;
+  color: oklch(1 0 0 / 0.75);
+}
+
+.notice {
+  padding: 28px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-xl);
+  background: var(--bg);
+  color: var(--muted);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.area-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.area-card {
+  --area-color: var(--blue-700);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-xl);
   background: var(--bg);
-  box-shadow: 0 30px 70px -24px oklch(0.3 0.08 252 / 0.28), 0 8px 22px -12px oklch(0.3 0.08 252 / 0.16);
-  transform: rotateY(-6deg) rotateX(2deg);
-  transform-origin: center;
+  box-shadow: var(--shadow-card);
+  animation: rise 0.55s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 60ms + 120ms);
+  transition: box-shadow 0.2s ease, transform 0.2s var(--ease), border-color 0.2s ease;
 }
 
-.ill-topbar {
+.area-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--area-color);
+}
+
+.area-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-lift);
+}
+
+.area-card-head {
   display: flex;
-  align-items: center;
-  gap: 7px;
-  height: 40px;
-  padding: 0 16px;
-  background: var(--primary-strong);
-}
-
-.ill-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: oklch(1 0 0 / 0.35);
-}
-
-.ill-topbar-title {
-  width: 120px;
-  height: 8px;
-  margin-left: 14px;
-  border-radius: 4px;
-  background: oklch(1 0 0 / 0.22);
-}
-
-.ill-body {
-  display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
-  min-height: 330px;
-}
-
-.ill-sidebar {
-  display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding-top: 20px;
-  background: var(--surface);
-  border-right: 1px solid var(--line);
+  padding: 24px 22px 18px;
+  color: inherit;
+  text-decoration: none;
 }
 
-.ill-side-icon {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: var(--surface-strong);
-  border: 1px solid var(--line);
+.area-card-head:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--blue-500);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
-.ill-side-icon.is-active {
-  background: var(--primary);
-  border-color: var(--primary);
+.area-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--area-color) 12%, white);
+  color: var(--area-color);
 }
 
-.ill-main {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px;
+.area-icon .icon {
+  width: 23px;
+  height: 23px;
+}
+
+.area-card-titles {
+  flex: 1;
   min-width: 0;
 }
 
-.ill-title-bar {
-  width: 42%;
-  height: 12px;
-  border-radius: 6px;
-  background: var(--primary);
+.area-card-name {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--navy-900);
+  overflow-wrap: anywhere;
 }
 
-.ill-metrics {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+.area-card-count {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--muted);
 }
 
-.ill-metric {
+.area-card-arrow {
+  color: var(--muted);
+  transition: transform 0.2s var(--ease), color 0.2s ease;
+}
+
+.area-card:hover .area-card-arrow {
+  color: var(--coral);
+  transform: translateX(4px);
+}
+
+.area-card-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
+  margin: 0 12px;
+  padding: 8px 0 14px;
+  border-top: 1px solid var(--line);
+  list-style: none;
 }
 
-.ill-metric strong {
-  font-size: clamp(18px, 2vw, 24px);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--primary-strong);
-}
-
-.ill-metric span {
-  width: 70%;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--surface-strong);
-}
-
-.ill-charts {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  gap: 12px;
-  flex: 1;
-}
-
-.ill-bars,
-.ill-donut-card {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-}
-
-.ill-bars {
+.area-card-list a {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 8px;
-  min-height: 150px;
-  padding: 16px 16px 14px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: 14px;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.ill-bars span {
-  flex: 1;
-  height: var(--h);
-  border-radius: 4px 4px 2px 2px;
-  background: var(--primary);
+.area-card-list a::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--area-color);
 }
 
-.ill-bars span.is-accent {
-  background: var(--accent);
+.area-card-list a span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.ill-donut-card {
+.area-card-list a:hover {
+  background: var(--surface);
+  color: var(--navy-800);
+}
+
+.area-card-list mark {
+  padding: 0 1px;
+  border-radius: 3px;
+  background: var(--coral-100);
+  color: var(--coral-deep);
+}
+
+.area-card-more {
+  padding: 6px 10px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- Área ---------- */
+.area-hero {
+  padding: 28px var(--page-x) 0;
+  background: linear-gradient(160deg, var(--navy-950), var(--navy-900) 60%, var(--navy-800));
+  color: var(--bg);
+}
+
+.area-hero-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: oklch(1 0 0 / 0.7);
+  animation: rise 0.45s var(--ease) both;
+}
+
+.breadcrumb a {
+  padding: 2px 4px;
+  margin-left: -4px;
+  border-radius: 6px;
+  color: oklch(1 0 0 / 0.86);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--bg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.breadcrumb a:focus-visible {
+  box-shadow: 0 0 0 2px var(--blue-300);
+}
+
+.breadcrumb .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.area-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  animation: rise 0.5s 0.05s var(--ease) both;
+}
+
+.area-hero-icon {
   display: grid;
   place-items: center;
-  padding: 14px;
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: var(--radius-lg);
+  background: oklch(1 0 0 / 0.1);
+  border: 1px solid oklch(1 0 0 / 0.16);
+  color: var(--bg);
 }
 
-.ill-donut {
-  width: min(100%, 118px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: conic-gradient(
-    var(--primary) 0 52%,
-    var(--accent) 52% 78%,
-    var(--surface-strong) 78% 100%
-  );
-  -webkit-mask: radial-gradient(circle, transparent 47%, #000 48%);
-  mask: radial-gradient(circle, transparent 47%, #000 48%);
+.area-hero-icon .icon {
+  width: 26px;
+  height: 26px;
 }
 
-/* ---------- Tela com relatórios ---------- */
+.area-title {
+  font-size: clamp(26px, 3.4vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.area-meta {
+  margin-top: 4px;
+  font-size: 14px;
+  color: oklch(1 0 0 / 0.7);
+}
+
+.area-switch {
+  margin-top: 22px;
+}
+
+.area-chips {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.area-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.area-chip {
+  flex: none;
+  padding: 10px 16px 12px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  color: oklch(1 0 0 / 0.72);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.area-chip:hover {
+  background: oklch(1 0 0 / 0.08);
+  color: var(--bg);
+}
+
+.area-chip[aria-current='page'] {
+  background: var(--surface);
+  color: var(--navy-900);
+}
+
+.area-chip:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--blue-300);
+}
+
+.area-chip-count {
+  margin-left: 6px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+/* ---------- Abas de relatórios ---------- */
 .tabs-bar {
-  position: sticky;
-  top: var(--header-h);
-  z-index: 10;
-  background: var(--bg);
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
 }
 
 .tabs {
   display: flex;
-  gap: 4px;
-  padding: 0 clamp(16px, 4vw, 40px);
+  gap: 6px;
+  max-width: var(--max-outer);
+  margin: 0 auto;
+  padding: 14px var(--page-x) 0;
   overflow-x: auto;
   scrollbar-width: thin;
-  scroll-behavior: smooth;
 }
 
 .tab {
   position: relative;
   flex: none;
-  max-width: 260px;
-  padding: 15px 16px 14px;
+  max-width: 280px;
+  padding: 10px 16px 14px;
   border: 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   background: transparent;
   color: var(--muted);
   font-size: 14.5px;
@@ -515,47 +1034,52 @@ input {
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .tab::after {
   content: '';
   position: absolute;
-  left: 12px;
-  right: 12px;
+  left: 14px;
+  right: 14px;
   bottom: 0;
   height: 3px;
   border-radius: 3px 3px 0 0;
-  background: transparent;
-  transition: background-color 0.15s ease;
+  background: var(--coral);
+  transform: scaleX(0);
+  transition: transform 0.25s var(--ease);
 }
 
 .tab:hover {
   color: var(--ink);
+  background: var(--surface-strong);
 }
 
 .tab[aria-selected='true'] {
-  color: var(--primary-strong);
+  color: var(--navy-900);
 }
 
 .tab[aria-selected='true']::after {
-  background: var(--accent);
+  transform: scaleX(1);
 }
 
 .tab:focus-visible {
-  box-shadow: inset 0 0 0 2px var(--primary);
-  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 2px var(--blue-500);
 }
 
+/* ---------- Relatório ---------- */
 .report-area {
-  padding: 22px clamp(16px, 4vw, 40px) 32px;
+  max-width: var(--max-outer);
+  margin: 0 auto;
+  padding: 22px var(--page-x) 40px;
 }
 
 .report-toolbar {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 14px 20px;
   margin-bottom: 16px;
 }
 
@@ -569,19 +1093,32 @@ input {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.25;
-  color: var(--primary-strong);
+  color: var(--navy-900);
   overflow-wrap: anywhere;
+}
+
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .report-frame {
   position: relative;
   height: calc(100vh - 190px);
-  min-height: 520px;
+  min-height: 540px;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--bg);
-  box-shadow: 0 18px 46px -26px oklch(0.3 0.08 252 / 0.3);
+  box-shadow: var(--shadow-card);
+  animation: rise 0.5s 0.08s var(--ease) both;
+}
+
+.report-frame:fullscreen {
+  height: 100%;
+  border-radius: 0;
+  border: 0;
 }
 
 .report-frame iframe {
@@ -589,16 +1126,14 @@ input {
   width: 100%;
   height: 100%;
   border: 0;
-  border-radius: var(--radius-lg);
   background: var(--bg);
-  transition: opacity 0.2s ease;
+  transition: opacity 0.25s ease;
 }
 
 .report-frame iframe.is-loading {
   opacity: 0;
 }
 
-/* ---------- Skeleton ---------- */
 .skeleton {
   position: absolute;
   inset: 0;
@@ -617,12 +1152,13 @@ input {
   background: var(--surface-strong);
 }
 
-.skeleton span::after {
+.skeleton > span::after,
+.sk-row span::after {
   content: '';
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.65), transparent);
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.7), transparent);
   animation: shimmer 1.6s ease-in-out infinite;
 }
 
@@ -631,9 +1167,16 @@ input {
   height: 18px;
 }
 
+.sk-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  height: 92px;
+  background: none !important;
+}
+
 .sk-block {
   flex: 1;
-  width: 100%;
 }
 
 @keyframes shimmer {
@@ -642,7 +1185,21 @@ input {
   }
 }
 
-/* ---------- Painel lateral ---------- */
+/* ---------- Rodapé ---------- */
+.site-footer {
+  padding: 20px var(--page-x);
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.site-footer strong {
+  color: var(--navy-900);
+}
+
+/* ---------- Painéis laterais ---------- */
 .side-panel {
   width: min(540px, 100%);
   max-width: 100%;
@@ -653,14 +1210,17 @@ input {
   margin: 0 0 0 auto;
   padding: 0;
   border: 0;
-  border-left: 1px solid var(--line);
   background: var(--bg);
   color: var(--ink);
-  box-shadow: -24px 0 60px -20px oklch(0.25 0.06 252 / 0.3);
+  box-shadow: -24px 0 60px -20px oklch(0.2 0.06 252 / 0.4);
+}
+
+.side-panel-narrow {
+  width: min(440px, 100%);
 }
 
 .side-panel[open] {
-  animation: panel-in 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: panel-in 0.28s var(--ease);
 }
 
 .side-panel.is-closing {
@@ -668,13 +1228,13 @@ input {
 }
 
 .side-panel::backdrop {
-  background: oklch(0.2 0.04 252 / 0.42);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  background: oklch(0.16 0.05 256 / 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .side-panel[open]::backdrop {
-  animation: fade-in 0.24s ease;
+  animation: fade-in-backdrop 0.28s ease;
 }
 
 .side-panel.is-closing::backdrop {
@@ -683,23 +1243,19 @@ input {
 
 @keyframes panel-in {
   from {
-    transform: translateX(32px);
+    transform: translateX(40px);
     opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
   }
 }
 
 @keyframes panel-out {
   to {
-    transform: translateX(32px);
+    transform: translateX(40px);
     opacity: 0;
   }
 }
 
-@keyframes fade-in {
+@keyframes fade-in-backdrop {
   from {
     opacity: 0;
   }
@@ -731,22 +1287,16 @@ input {
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--primary-strong);
+  color: var(--navy-900);
 }
 
 .panel-body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
   padding: 26px 28px;
   overflow-y: auto;
-}
-
-.steps {
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .step {
@@ -761,7 +1311,7 @@ input {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--primary);
+  background: var(--blue-700);
   color: var(--bg);
   font-size: 14px;
   font-weight: 700;
@@ -770,7 +1320,6 @@ input {
 .step-title {
   font-size: 15px;
   font-weight: 600;
-  color: var(--ink);
 }
 
 .step-text {
@@ -789,23 +1338,21 @@ input {
 .field-label {
   font-size: 14px;
   font-weight: 600;
-  color: var(--ink);
 }
 
 .input-wrap {
-  position: relative;
   display: flex;
   align-items: center;
   min-height: 48px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
   background: var(--bg);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .input-wrap:focus-within {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-pale);
+  border-color: var(--blue-700);
+  box-shadow: 0 0 0 3px var(--blue-100);
 }
 
 .input-wrap:has(input[aria-invalid='true']) {
@@ -848,8 +1395,8 @@ input {
   padding: 7px 12px;
   border: 0;
   border-radius: 6px;
-  background: var(--primary-pale);
-  color: var(--primary-strong);
+  background: var(--blue-100);
+  color: var(--navy-800);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -880,8 +1427,8 @@ input {
   padding: 16px 18px;
   border: 1px solid oklch(0.88 0.04 252);
   border-radius: var(--radius-md);
-  background: var(--primary-pale);
-  color: var(--primary-strong);
+  background: var(--blue-100);
+  color: var(--navy-800);
 }
 
 .info-box .icon {
@@ -899,7 +1446,27 @@ input {
   margin-top: 3px;
   font-size: 13.5px;
   line-height: 1.5;
-  color: var(--primary-strong);
+}
+
+.auth-lock {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  background: var(--navy-900);
+  color: var(--bg);
+}
+
+.auth-lock .icon {
+  width: 26px;
+  height: 26px;
+}
+
+.auth-intro {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
 .panel-footer {
@@ -910,7 +1477,6 @@ input {
   gap: 12px;
   padding: 18px 28px;
   border-top: 1px solid var(--line);
-  background: var(--bg);
 }
 
 .panel-footer-actions {
@@ -925,165 +1491,133 @@ input {
   right: 24px;
   bottom: 24px;
   z-index: 200;
-  max-width: min(380px, calc(100vw - 32px));
+  max-width: min(400px, calc(100vw - 32px));
   padding: 14px 18px;
+  border-left: 4px solid var(--coral);
   border-radius: var(--radius-md);
-  background: var(--primary-strong);
+  background: var(--navy-900);
   color: var(--bg);
   font-size: 14.5px;
   font-weight: 500;
-  box-shadow: 0 14px 34px -14px oklch(0.2 0.06 252 / 0.5);
+  box-shadow: 0 16px 36px -14px oklch(0.15 0.06 252 / 0.6);
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
-  transition: opacity 0.22s ease, transform 0.22s ease;
+  transition: opacity 0.22s ease, transform 0.22s var(--ease);
 }
 
 .toast:empty {
   padding: 0;
+  border: 0;
 }
 
 .toast.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
-/* ---------- Responsividade ---------- */
+/* ---------- Responsivo ---------- */
 @media (max-width: 960px) {
-  .empty-state {
-    grid-template-columns: minmax(0, 1fr);
-    text-align: center;
-    min-height: auto;
-  }
-
-  .eyebrow-line {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .empty-title span {
-    white-space: normal;
-  }
-
-  .empty-text {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .illustration-wrap {
-    width: min(100%, 640px);
-    margin: 0 auto;
-    perspective: none;
-  }
-
-  .illustration {
-    transform: none;
+  .hero-art {
+    width: 90vw;
+    right: -32vw;
+    opacity: 0.55;
   }
 }
 
 @media (max-width: 700px) {
   :root {
-    --header-h: 68px;
+    --topbar-h: 58px;
   }
 
-  .brand-divider,
-  .brand-subtitle {
-    display: none;
+  .brand-mark {
+    font-size: 19px;
   }
 
   .brand {
     gap: 10px;
   }
 
-  .brand-name {
-    font-size: 20px;
-  }
-
-  .brand-title {
-    font-size: 14px;
-  }
-
-  .header-actions {
-    gap: 8px;
-  }
-
-  .header-btn {
-    width: 44px;
-    height: 44px;
-    min-height: 44px;
+  .btn-ghost-light,
+  .admin-actions .btn,
+  .report-actions .btn {
+    width: 40px;
+    min-height: 40px;
     padding: 0;
   }
 
-  .header-btn .icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .header-btn .btn-label {
+  .btn-ghost-light .btn-label,
+  .admin-actions .btn-label,
+  .report-actions .btn-label {
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
     margin: -1px;
     overflow: hidden;
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
     white-space: nowrap;
-    border: 0;
   }
 
-  .empty-state {
-    padding-top: 40px;
-    padding-bottom: 48px;
+  .admin-actions .dirty-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
   }
 
-  .empty-title {
-    font-size: clamp(38px, 11vw, 52px);
+  .adm-badge {
+    padding: 5px 10px;
+    font-size: 11.5px;
   }
 
-  .empty-text {
-    font-size: 16.5px;
+  .admin-bar-inner {
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
-  .illustration-wrap {
+  .admin-status {
     width: 100%;
+    font-size: 13px;
   }
 
-  .ill-body {
-    grid-template-columns: 42px minmax(0, 1fr);
-    min-height: 0;
+  .hero {
+    padding-bottom: 104px;
   }
 
-  .ill-side-icon {
-    width: 18px;
-    height: 18px;
+  .hero-art {
+    width: 130vw;
+    right: -70vw;
+    top: 38%;
+    opacity: 0.35;
   }
 
-  .ill-main {
-    padding: 14px;
+  .hero-title {
+    font-size: clamp(40px, 12vw, 54px);
+  }
+
+  .hero-stats {
+    gap: 12px 22px;
+  }
+
+  .hero-stats strong {
+    font-size: 22px;
+  }
+
+  .search-kbd {
+    display: none;
+  }
+
+  .home-body {
+    margin-top: -72px;
+  }
+
+  .area-heading {
     gap: 12px;
   }
 
-  .ill-metrics {
-    gap: 8px;
-  }
-
-  .ill-metric {
-    padding: 10px;
-  }
-
-  .ill-charts {
-    gap: 8px;
-  }
-
-  .ill-bars {
-    min-height: 110px;
-    gap: 5px;
-    padding: 12px 10px 10px;
-  }
-
-  .ill-donut-card {
-    padding: 10px;
+  .area-hero-icon {
+    width: 44px;
+    height: 44px;
   }
 
   .report-toolbar {
@@ -1098,9 +1632,9 @@ input {
     min-height: 460px;
   }
 
-  .side-panel {
+  .side-panel,
+  .side-panel-narrow {
     width: 100%;
-    border-left: 0;
   }
 
   .panel-header,
@@ -1123,20 +1657,18 @@ input {
     flex: 1;
   }
 
-  .panel-footer .btn {
-    width: 100%;
-    padding: 0 12px;
-  }
-
-  .panel-footer-actions .btn {
-    width: auto;
-  }
-
   .toast {
     right: 16px;
     left: 16px;
     bottom: 16px;
     max-width: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-sep,
+  .brand-product {
+    display: none;
   }
 }
 
@@ -1146,530 +1678,221 @@ input {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 
-  .illustration {
+  .hero-art-line {
+    stroke-dashoffset: 0;
+  }
+
+  .hero-art-points circle {
+    opacity: 1;
+  }
+
+  .area-card:hover,
+  .area-card:hover .area-card-arrow {
     transform: none;
   }
 
   .skeleton span::after {
     display: none;
   }
-
-  .toast {
-    transform: none;
-  }
-}
-
-/* ---------- Modo administradora ---------- */
-.admin-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-  padding: 10px clamp(16px, 4vw, 40px);
-  background: oklch(0.97 0.03 80);
-  border-bottom: 1px solid oklch(0.88 0.06 80);
-  color: oklch(0.36 0.06 70);
-  font-size: 13.5px;
-}
-
-.admin-banner code {
-  font-size: 12.5px;
-  padding: 1px 5px;
-  border-radius: 4px;
-  background: oklch(0.93 0.04 80);
-}
-
-.link-btn {
-  padding: 4px 0;
-  border: 0;
-  background: none;
-  color: var(--error);
-  font-size: 13.5px;
-  font-weight: 600;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.dirty-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.header-btn {
-  position: relative;
-}
-
-/* ---------- Barra de áreas ---------- */
-.areas-bar {
-  background: var(--bg);
-  border-bottom: 1px solid var(--line);
-}
-
-.areas {
-  display: flex;
-  gap: 8px;
-  padding: 12px clamp(16px, 4vw, 40px);
-  overflow-x: auto;
-  scrollbar-width: thin;
-}
-
-.area-chip {
-  flex: none;
-  padding: 7px 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--bg);
-  color: var(--muted);
-  font-size: 13.5px;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-.area-chip:hover {
-  color: var(--ink);
-  border-color: oklch(0.8 0.03 250);
-}
-
-.area-chip[aria-current='true'] {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--bg);
-}
-
-.area-count {
-  margin-left: 6px;
-  font-weight: 500;
-  opacity: 0.75;
-}
-
-.eyebrow-area:not(:empty)::before {
-  content: '· ';
-}
-
-.eyebrow-area {
-  color: var(--muted);
-}
-
-body.has-areas .tabs-bar {
-  top: var(--header-h);
-}
-
-@media (max-width: 700px) {
-  .header-btn .dirty-dot {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-  }
-}
-
-.brand-title,
-.brand-subtitle {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.brand {
-  flex: 1 1 auto;
-}
-
-/* ---------- Marca como link ---------- */
-a.brand {
-  color: inherit;
-  text-decoration: none;
-  border-radius: var(--radius-sm);
-}
-
-/* ---------- Página inicial ---------- */
-.home-view {
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: clamp(40px, 6vw, 72px) clamp(16px, 4vw, 40px) 64px;
-}
-
-body.on-home {
-  background: var(--bg);
-}
-
-.home-hero {
-  position: relative;
-  max-width: 760px;
-}
-
-.home-title {
-  margin-top: 16px;
-  font-size: clamp(40px, 5vw, 68px);
-  font-weight: 800;
-  line-height: 1.04;
-  letter-spacing: -0.04em;
-  color: var(--primary-strong);
-}
-
-.home-subtitle {
-  margin-top: 14px;
-  font-size: clamp(18px, 2vw, 22px);
-  color: var(--muted);
-}
-
-.home-areas {
-  margin-top: clamp(36px, 5vw, 56px);
-}
-
-.home-areas-title {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.area-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-  gap: 18px;
-  margin: 18px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.area-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  height: 100%;
-  padding: 22px 22px 20px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-xl);
-  background: var(--bg);
-  color: inherit;
-  text-decoration: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-}
-
-.area-card:hover {
-  border-color: oklch(0.78 0.06 252);
-  box-shadow: 0 18px 40px -26px oklch(0.3 0.08 252 / 0.35);
-  transform: translateY(-2px);
-}
-
-.area-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.area-card-icon {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-md);
-  background: var(--primary-pale);
-  color: var(--primary);
-}
-
-.area-card-icon .icon {
-  width: 22px;
-  height: 22px;
-}
-
-.area-card-arrow {
-  color: var(--muted);
-  transition: color 0.15s ease, transform 0.15s ease;
-}
-
-.area-card:hover .area-card-arrow {
-  color: var(--accent);
-  transform: translateX(3px);
-}
-
-.area-card-name {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--primary-strong);
-}
-
-.area-card-count {
-  margin-top: 2px;
-  font-size: 13.5px;
-  color: var(--muted);
-}
-
-.area-card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 0;
-  padding: 14px 0 0;
-  border-top: 1px solid var(--line);
-  list-style: none;
-  font-size: 14px;
-  color: var(--ink);
-}
-
-.area-card-list li {
-  position: relative;
-  padding-left: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.area-card-list li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.62em;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.area-card-list .more {
-  color: var(--muted);
-}
-
-.area-card-list .more::before {
-  background: var(--line);
-}
-
-/* ---------- Barra de áreas com "Início" ---------- */
-.areas {
-  align-items: center;
-}
-
-.areas-list {
-  display: flex;
-  gap: 8px;
-}
-
-.home-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  flex: none;
-  padding: 7px 12px 7px 8px;
-  border-radius: 999px;
-  color: var(--primary-strong);
-  font-size: 13.5px;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.home-link:hover {
-  background: var(--surface);
-}
-
-.home-link .icon {
-  width: 16px;
-  height: 16px;
-}
-
-.areas-divider {
-  flex: none;
-  width: 1px;
-  height: 22px;
-  background: var(--line);
-}
-
-@media (max-width: 960px) {
-  .home-hero {
-    margin: 0 auto;
-    text-align: center;
-  }
-  .home-hero .eyebrow-line {
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .area-card:hover,
-  .area-card:hover .area-card-arrow {
-    transform: none;
-  }
 }
 
 </style>
   </head>
-  <body>
+  <body class="on-home">
     <a class="skip-link" href="#main-content">Ir para o conteúdo principal</a>
 
-    <header class="site-header">
-      <a class="brand" href="#/" aria-label="ABIHPEC — Portal de Indicadores, página inicial">
-        <span class="brand-name">ABIHPEC</span>
-        <span class="brand-divider" aria-hidden="true"></span>
-        <span class="brand-text">
-          <span class="brand-title">Portal de Indicadores</span>
-          <span class="brand-subtitle">Inteligência para decisões</span>
-        </span>
+    <!-- ============ Barra superior ============ -->
+    <header class="topbar">
+      <a class="brand" href="#/" aria-label="Indicadores ABIHPEC, página inicial">
+        <span class="brand-mark">ABIHPEC</span>
+        <span class="brand-sep" aria-hidden="true"></span>
+        <span class="brand-product">Indicadores</span>
       </a>
 
-      <div class="header-actions">
-        <button type="button" class="btn btn-secondary header-btn" id="publish-btn" hidden>
+      <div class="topbar-actions">
+        <span class="adm-badge" id="adm-badge" hidden>
+          <span class="adm-badge-dot" aria-hidden="true"></span>
+          Modo ADM
+        </span>
+        <button type="button" class="btn btn-ghost-light" id="adm-login-btn">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 3v12" />
-            <path d="m7 10 5 5 5-5" />
-            <path d="M5 21h14" />
+            <rect x="4" y="11" width="16" height="10" rx="2" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
           </svg>
-          <span class="btn-label">Baixar relatorios.json</span>
-          <span class="dirty-dot" id="dirty-dot" hidden aria-hidden="true"></span>
-        </button>
-        <button type="button" class="btn btn-secondary header-btn" id="edit-report-btn" hidden>
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-          </svg>
-          <span class="btn-label">Editar atual</span>
-        </button>
-        <button type="button" class="btn btn-primary header-btn" id="add-report-btn" hidden>
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 5v14" />
-            <path d="M5 12h14" />
-          </svg>
-          <span class="btn-label">Adicionar relatório</span>
+          <span class="btn-label">Acesso ADM</span>
         </button>
       </div>
     </header>
 
-    <div class="admin-banner" id="admin-banner" hidden>
-      <p>
-        <strong>Modo administradora.</strong>
-        <span id="admin-status">As alterações ficam só neste navegador até você baixar o
-          <code>relatorios.json</code> e enviá-lo ao GitHub.</span>
-      </p>
-      <button type="button" class="link-btn" id="discard-btn" hidden>Descartar alterações</button>
+    <!-- ============ Barra da administradora ============ -->
+    <div class="admin-bar" id="admin-bar" hidden>
+      <div class="admin-bar-inner">
+        <p class="admin-status">
+          <span class="admin-status-dot" id="admin-status-dot" aria-hidden="true"></span>
+          <span id="admin-status-text">Tudo publicado.</span>
+        </p>
+        <div class="admin-actions">
+          <button type="button" class="btn btn-primary btn-sm" id="add-report-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 5v14" /><path d="M5 12h14" />
+            </svg>
+            <span class="btn-label">Adicionar relatório</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="edit-report-btn" hidden>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+            </svg>
+            <span class="btn-label">Editar atual</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="publish-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" />
+            </svg>
+            <span class="btn-label">Baixar relatorios.json</span>
+            <span class="dirty-dot" id="dirty-dot" hidden aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="password-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="8" cy="15" r="4" /><path d="m10.8 12.2 8.2-8.2" /><path d="m16 7 3 3" />
+            </svg>
+            <span class="btn-label">Trocar senha</span>
+          </button>
+          <button type="button" class="link-btn" id="discard-btn" hidden>Descartar alterações</button>
+          <button type="button" class="btn btn-quiet btn-sm" id="logout-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" />
+            </svg>
+            <span class="btn-label">Sair</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <main id="main-content" tabindex="-1">
-      <!-- Tela inicial (sem relatórios) -->
-      <section class="empty-state" id="empty-state" aria-labelledby="empty-title">
-        <div class="empty-content">
-          <span class="eyebrow-line" aria-hidden="true"></span>
-          <p class="eyebrow">POWER BI INSTITUCIONAL</p>
-          <h1 class="empty-title" id="empty-title">
-            <span>Seus indicadores,</span>
-            <span>em um só lugar.</span>
-          </h1>
-          <p class="empty-text" id="empty-text">
-            Adicione o link seguro do seu relatório para transformar esta página no ponto de acesso aos
-            dados da sua equipe.
-          </p>
-        </div>
+      <!-- ============ Página inicial ============ -->
+      <section class="home-view" id="home-view" aria-labelledby="home-title">
+        <div class="hero">
+          <svg class="hero-art" viewBox="0 0 640 420" aria-hidden="true" focusable="false">
+            <defs>
+              <pattern id="hero-dots" width="22" height="22" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1.4" />
+              </pattern>
+            </defs>
+            <rect class="hero-art-dots" x="250" y="10" width="380" height="250" fill="url(#hero-dots)" />
+            <circle class="hero-art-ring" cx="470" cy="210" r="190" />
+            <circle class="hero-art-ring" cx="470" cy="210" r="130" />
+            <g class="hero-art-bars">
+              <rect x="300" y="250" width="34" height="110" rx="5" />
+              <rect x="350" y="215" width="34" height="145" rx="5" />
+              <rect x="400" y="180" width="34" height="180" rx="5" />
+              <rect class="is-accent" x="450" y="130" width="34" height="230" rx="5" />
+              <rect x="500" y="160" width="34" height="200" rx="5" />
+              <rect class="is-accent" x="550" y="95" width="34" height="265" rx="5" />
+            </g>
+            <polyline class="hero-art-line" points="317,215 367,180 417,150 467,95 517,120 567,60" />
+            <g class="hero-art-points">
+              <circle cx="317" cy="215" r="5" />
+              <circle cx="367" cy="180" r="5" />
+              <circle cx="417" cy="150" r="5" />
+              <circle cx="467" cy="95" r="5" />
+              <circle cx="517" cy="120" r="5" />
+              <circle cx="567" cy="60" r="6.5" />
+            </g>
+          </svg>
 
-        <div class="illustration-wrap" aria-hidden="true">
-          <div class="illustration">
-            <div class="ill-topbar">
-              <span class="ill-dot"></span>
-              <span class="ill-dot"></span>
-              <span class="ill-dot"></span>
-              <span class="ill-topbar-title"></span>
-            </div>
-            <div class="ill-body">
-              <div class="ill-sidebar">
-                <span class="ill-side-icon is-active"></span>
-                <span class="ill-side-icon"></span>
-                <span class="ill-side-icon"></span>
-                <span class="ill-side-icon"></span>
-              </div>
-              <div class="ill-main">
-                <span class="ill-title-bar"></span>
-                <div class="ill-metrics">
-                  <div class="ill-metric">
-                    <strong>24</strong>
-                    <span></span>
-                  </div>
-                  <div class="ill-metric">
-                    <strong>87%</strong>
-                    <span></span>
-                  </div>
-                  <div class="ill-metric">
-                    <strong>12</strong>
-                    <span></span>
-                  </div>
-                </div>
-                <div class="ill-charts">
-                  <div class="ill-bars">
-                    <span style="--h: 46%"></span>
-                    <span style="--h: 68%"></span>
-                    <span class="is-accent" style="--h: 88%"></span>
-                    <span style="--h: 56%"></span>
-                    <span style="--h: 76%"></span>
-                    <span class="is-accent" style="--h: 62%"></span>
-                  </div>
-                  <div class="ill-donut-card">
-                    <span class="ill-donut"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="hero-inner">
+            <p class="hero-eyebrow"><span class="hero-eyebrow-line" aria-hidden="true"></span>Portal de Indicadores</p>
+            <h1 class="hero-title" id="home-title">Indicadores ABIHPEC</h1>
+            <p class="hero-subtitle">Seus dados em um só lugar.</p>
+
+            <ul class="hero-stats" id="hero-stats" aria-label="Resumo do portal"></ul>
+
+            <form class="search" id="search-form" role="search" autocomplete="off">
+              <label class="visually-hidden" for="search-input">Buscar relatório ou área</label>
+              <svg class="icon search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+              </svg>
+              <input type="search" id="search-input" placeholder="Buscar relatório ou área…" />
+              <kbd class="search-kbd" aria-hidden="true">/</kbd>
+            </form>
           </div>
         </div>
-      </section>
 
-      <!-- Página inicial com áreas -->
-      <section class="home-view" id="home-view" hidden aria-labelledby="home-title">
-        <div class="home-hero">
-          <span class="eyebrow-line" aria-hidden="true"></span>
-          <p class="eyebrow">PORTAL DE INDICADORES</p>
-          <h1 class="home-title" id="home-title">Indicadores ABIHPEC</h1>
-          <p class="home-subtitle">Seus dados em um só lugar.</p>
-        </div>
-        <div class="home-areas">
-          <h2 class="home-areas-title">Escolha uma área</h2>
+        <div class="home-body">
+          <div class="home-heading">
+            <h2 class="section-title">Áreas</h2>
+            <p class="section-hint" id="search-summary" aria-live="polite"></p>
+          </div>
+          <p class="notice" id="home-notice" hidden></p>
           <ul class="area-cards" id="area-cards"></ul>
         </div>
       </section>
 
-      <!-- Tela com relatórios -->
-      <section class="reports-view" id="reports-view" hidden aria-label="Relatórios cadastrados">
-        <nav class="areas-bar" id="areas-bar" aria-label="Áreas">
-          <div class="areas">
-            <a class="home-link" href="#/">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="m15 18-6-6 6-6" />
-              </svg>
-              Início
-            </a>
-            <span class="areas-divider" aria-hidden="true"></span>
-            <div class="areas-list" id="report-areas"></div>
+      <!-- ============ Área ============ -->
+      <section class="area-view" id="area-view" hidden aria-labelledby="area-title">
+        <div class="area-hero">
+          <div class="area-hero-inner">
+            <nav class="breadcrumb" aria-label="Você está em">
+              <a href="#/">Início</a>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg>
+              <span id="crumb-area" aria-current="page"></span>
+            </nav>
+            <div class="area-heading">
+              <span class="area-hero-icon" id="area-hero-icon" aria-hidden="true"></span>
+              <div>
+                <h1 class="area-title" id="area-title"></h1>
+                <p class="area-meta" id="area-meta"></p>
+              </div>
+            </div>
+            <nav class="area-switch" aria-label="Outras áreas">
+              <div class="area-chips" id="area-chips"></div>
+            </nav>
           </div>
-        </nav>
-        <nav class="tabs-bar" aria-label="Relatórios">
-          <div class="tabs" id="report-tabs" role="tablist" aria-label="Relatórios cadastrados"></div>
-        </nav>
+        </div>
+
+        <div class="tabs-bar">
+          <div class="tabs" id="report-tabs" role="tablist" aria-label="Relatórios da área"></div>
+        </div>
 
         <div class="report-area">
           <div class="report-toolbar">
             <div class="report-heading">
-              <p class="eyebrow eyebrow-small">RELATÓRIO ATIVO <span class="eyebrow-area" id="report-area-label"></span></p>
-              <h1 class="report-name" id="report-name"></h1>
+              <p class="eyebrow">Relatório ativo</p>
+              <h2 class="report-name" id="report-name"></h2>
             </div>
-            <button type="button" class="btn btn-secondary" id="reload-report-btn">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="M21 12a9 9 0 1 1-2.64-6.36" />
-                <path d="M21 3v6h-6" />
-              </svg>
-              <span>Recarregar</span>
-            </button>
+            <div class="report-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="reload-report-btn">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M21 12a9 9 0 1 1-2.64-6.36" /><path d="M21 3v6h-6" />
+                </svg>
+                <span class="btn-label">Recarregar</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="fullscreen-btn">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                  <path d="M3 16v3a2 2 0 0 0 2 2h3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                </svg>
+                <span class="btn-label">Tela cheia</span>
+              </button>
+              <a class="btn btn-secondary btn-sm" id="open-pbi-link" target="_blank" rel="noopener noreferrer" href="#/">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
+                <span class="btn-label">Abrir no Power BI</span>
+              </a>
+            </div>
           </div>
 
-          <div class="report-frame" id="report-panel" role="tabpanel" aria-labelledby="report-name">
+          <div class="report-frame" id="report-panel" role="tabpanel">
             <div class="skeleton" id="report-skeleton" aria-hidden="true">
               <span class="sk-line"></span>
-              <span class="sk-block"></span>
+              <span class="sk-row"><span></span><span></span><span></span></span>
               <span class="sk-block"></span>
             </div>
             <iframe
@@ -1683,35 +1906,37 @@ body.on-home {
       </section>
     </main>
 
-    <!-- Painel lateral de configuração -->
+    <footer class="site-footer">
+      <p>
+        <strong>ABIHPEC</strong> · Portal de Indicadores. Os relatórios são exibidos pelo Power BI e exigem
+        login com a conta Microsoft.
+      </p>
+    </footer>
+
+    <!-- ============ Painel: relatório ============ -->
     <dialog class="side-panel" id="report-dialog" aria-labelledby="dialog-title">
       <form class="panel-form" id="report-form" novalidate>
         <header class="panel-header">
           <div>
-            <p class="eyebrow eyebrow-small">CONFIGURAÇÃO</p>
+            <p class="eyebrow">Configuração</p>
             <h2 class="panel-title" id="dialog-title">Adicionar relatório</h2>
           </div>
-          <button type="button" class="icon-btn" id="close-dialog-btn" aria-label="Fechar painel">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
+          <button type="button" class="icon-btn" data-close aria-label="Fechar painel">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
           </button>
         </header>
 
         <div class="panel-body">
-          <ol class="steps">
-            <li class="step">
-              <span class="step-number" aria-hidden="true">1</span>
-              <div>
-                <p class="step-title">Copie o link no Power BI</p>
-                <p class="step-text">
-                  Abra o relatório, acesse Incorporar relatório e copie o campo “Link to embed this
-                  content”.
-                </p>
-              </div>
-            </li>
-          </ol>
+          <div class="step">
+            <span class="step-number" aria-hidden="true">1</span>
+            <div>
+              <p class="step-title">Copie o link no Power BI</p>
+              <p class="step-text">
+                Abra o relatório, acesse Inserir relatório › Site ou portal e copie o campo “Link para
+                inserir este conteúdo”.
+              </p>
+            </div>
+          </div>
 
           <div class="field">
             <label class="field-label" for="report-url">URL de incorporação</label>
@@ -1723,7 +1948,6 @@ body.on-home {
               <input
                 type="text"
                 id="report-url"
-                name="url"
                 inputmode="url"
                 autocomplete="off"
                 spellcheck="false"
@@ -1740,14 +1964,7 @@ body.on-home {
           <div class="field">
             <label class="field-label" for="report-title">Nome do relatório (opcional)</label>
             <div class="input-wrap input-plain">
-              <input
-                type="text"
-                id="report-title"
-                name="name"
-                maxlength="70"
-                autocomplete="off"
-                placeholder="Ex.: Panorama do setor"
-              />
+              <input type="text" id="report-title" maxlength="70" autocomplete="off" placeholder="Ex.: Panorama do setor" />
             </div>
           </div>
 
@@ -1757,7 +1974,6 @@ body.on-home {
               <input
                 type="text"
                 id="report-area"
-                name="area"
                 maxlength="40"
                 autocomplete="off"
                 list="area-options"
@@ -1773,25 +1989,75 @@ body.on-home {
 
           <div class="info-box">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6Z" />
-              <path d="m9 12 2 2 4-4" />
+              <path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6Z" /><path d="m9 12 2 2 4-4" />
             </svg>
             <div>
               <p class="info-title">Acesso protegido pelo Power BI</p>
-              <p class="info-text">
-                As permissões do relatório continuam sendo controladas pela sua conta Microsoft.
-              </p>
+              <p class="info-text">As permissões do relatório continuam sendo controladas pela sua conta Microsoft.</p>
             </div>
           </div>
         </div>
 
         <footer class="panel-footer">
-          <button type="button" class="btn btn-danger" id="remove-report-btn" hidden>
-            Remover relatório
-          </button>
+          <button type="button" class="btn btn-danger" id="remove-report-btn" hidden>Remover relatório</button>
           <div class="panel-footer-actions">
-            <button type="button" class="btn btn-secondary" id="cancel-dialog-btn">Cancelar</button>
+            <button type="button" class="btn btn-secondary" data-close>Cancelar</button>
             <button type="submit" class="btn btn-primary" id="submit-report-btn">Adicionar e abrir</button>
+          </div>
+        </footer>
+      </form>
+    </dialog>
+
+    <!-- ============ Painel: acesso ADM / senha ============ -->
+    <dialog class="side-panel side-panel-narrow" id="auth-dialog" aria-labelledby="auth-title">
+      <form class="panel-form" id="auth-form" novalidate>
+        <header class="panel-header">
+          <div>
+            <p class="eyebrow">Área restrita</p>
+            <h2 class="panel-title" id="auth-title">Acesso ADM</h2>
+          </div>
+          <button type="button" class="icon-btn" data-close aria-label="Fechar painel">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+          </button>
+        </header>
+
+        <div class="panel-body">
+          <div class="auth-lock" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" focusable="false">
+              <rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+          </div>
+          <p class="auth-intro" id="auth-intro">Digite a senha de administradora para gerenciar os relatórios do portal.</p>
+
+          <div class="field">
+            <label class="field-label" for="auth-password" id="auth-password-label">Senha</label>
+            <div class="input-wrap input-plain">
+              <input
+                type="password"
+                id="auth-password"
+                autocomplete="current-password"
+                required
+                aria-describedby="auth-error"
+              />
+              <button type="button" class="paste-btn" id="toggle-password" aria-pressed="false">Mostrar</button>
+            </div>
+          </div>
+
+          <div class="field" id="auth-confirm-field" hidden>
+            <label class="field-label" for="auth-confirm">Confirme a senha</label>
+            <div class="input-wrap input-plain">
+              <input type="password" id="auth-confirm" autocomplete="new-password" aria-describedby="auth-error" />
+            </div>
+            <p class="field-help">Use pelo menos 8 caracteres, misturando letras, números e símbolos.</p>
+          </div>
+
+          <p class="field-error" id="auth-error" role="alert"></p>
+        </div>
+
+        <footer class="panel-footer">
+          <div class="panel-footer-actions">
+            <button type="button" class="btn btn-secondary" data-close>Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="auth-submit">Entrar</button>
           </div>
         </footer>
       </form>
@@ -1801,18 +2067,24 @@ body.on-home {
 
     <script type="module">
 /* =====================================================================
-   Portal de Indicadores ABIHPEC
-   - Visitantes: veem os relatórios publicados em relatorios.json.
-   - Administradora: abre o portal com ?admin no final do link, edita,
-     baixa o relatorios.json atualizado e envia ao GitHub.
+   Indicadores ABIHPEC
+   - Todos veem os relatórios publicados em relatorios.json.
+   - "Acesso ADM" (senha) libera adicionar, editar, remover e trocar senha.
+     As alterações ficam como rascunho neste navegador até a administradora
+     baixar o relatorios.json e enviá-lo ao GitHub.
    ===================================================================== */
 
 const PUBLISHED_FILE = './relatorios.json';
 const DRAFT_KEY = 'abihpec-powerbi-reports';
 const LEGACY_STORAGE_KEY = 'abihpec-powerbi-report';
+const SESSION_KEY = 'abihpec-adm-sessao';
 const DEFAULT_AREA = 'Geral';
+const PBKDF2_ITERATIONS = 210000;
+const MIN_PASSWORD = 8;
+const MAX_ATTEMPTS = 5;
+const LOCK_SECONDS = 30;
 const TOAST_DURATION = 3200;
-const IS_ADMIN = new URLSearchParams(window.location.search).has('admin');
+const CARD_PREVIEW = 4;
 
 const MESSAGES = {
   empty: 'Cole a URL de incorporação do relatório.',
@@ -1824,44 +2096,62 @@ const MESSAGES = {
   removed: 'Relatório removido deste navegador.',
   reloaded: 'Relatório recarregado.',
   pasteBlocked: 'Use Ctrl+V para colar o link neste campo.',
-  storageBlocked:
-    'O navegador bloqueou o armazenamento local. As alterações não serão mantidas após fechar a página.',
+  storageBlocked: 'O navegador bloqueou o armazenamento local. As alterações não serão mantidas.',
   downloaded: 'Arquivo baixado. Envie-o ao GitHub para publicar.',
   discarded: 'Alterações descartadas.',
   loadError: 'Não foi possível carregar a lista de relatórios. Tente recarregar a página.',
   noReports: 'Ainda não há relatórios publicados neste portal.',
-  adminEmpty:
-    'Adicione o link seguro do seu relatório para transformar esta página no ponto de acesso aos dados da sua equipe.',
+  adminEmpty: 'Nenhum relatório ainda. Use “Adicionar relatório” na barra acima para começar.',
+  wrongPassword: 'Senha incorreta.',
+  locked: (s) => `Muitas tentativas. Aguarde ${s} segundos.`,
+  shortPassword: `A senha precisa ter pelo menos ${MIN_PASSWORD} caracteres.`,
+  mismatch: 'As senhas não conferem.',
+  noCrypto: 'Este navegador não permite verificar a senha. Use o Chrome ou o Edge atualizados.',
+  welcome: 'Acesso ADM liberado.',
+  created: 'Senha criada. Baixe o relatorios.json e envie ao GitHub para valer em qualquer computador.',
+  changed: 'Senha alterada. Baixe o relatorios.json e envie ao GitHub para publicar.',
+  loggedOut: 'Você saiu do modo ADM.',
 };
 
 /* ---------- Elementos ---------- */
 const $ = (id) => document.getElementById(id);
 const els = {
+  admBadge: $('adm-badge'),
+  admLoginBtn: $('adm-login-btn'),
+  adminBar: $('admin-bar'),
+  adminStatusDot: $('admin-status-dot'),
+  adminStatusText: $('admin-status-text'),
   addBtn: $('add-report-btn'),
   editBtn: $('edit-report-btn'),
   publishBtn: $('publish-btn'),
   dirtyDot: $('dirty-dot'),
-  adminBanner: $('admin-banner'),
+  passwordBtn: $('password-btn'),
   discardBtn: $('discard-btn'),
-  emptyState: $('empty-state'),
+  logoutBtn: $('logout-btn'),
   homeView: $('home-view'),
+  heroStats: $('hero-stats'),
+  searchForm: $('search-form'),
+  searchInput: $('search-input'),
+  searchSummary: $('search-summary'),
+  homeNotice: $('home-notice'),
   areaCards: $('area-cards'),
-  emptyText: $('empty-text'),
-  reportsView: $('reports-view'),
-  areasBar: $('areas-bar'),
-  areas: $('report-areas'),
+  areaView: $('area-view'),
+  crumbArea: $('crumb-area'),
+  areaHeroIcon: $('area-hero-icon'),
+  areaTitle: $('area-title'),
+  areaMeta: $('area-meta'),
+  areaChips: $('area-chips'),
   tabs: $('report-tabs'),
   reportName: $('report-name'),
-  reportAreaLabel: $('report-area-label'),
   reloadBtn: $('reload-report-btn'),
-  iframe: $('report-iframe'),
-  skeleton: $('report-skeleton'),
+  fullscreenBtn: $('fullscreen-btn'),
+  openPbiLink: $('open-pbi-link'),
   frame: $('report-panel'),
-  dialog: $('report-dialog'),
-  form: $('report-form'),
+  skeleton: $('report-skeleton'),
+  iframe: $('report-iframe'),
+  reportDialog: $('report-dialog'),
+  reportForm: $('report-form'),
   dialogTitle: $('dialog-title'),
-  closeBtn: $('close-dialog-btn'),
-  cancelBtn: $('cancel-dialog-btn'),
   removeBtn: $('remove-report-btn'),
   submitBtn: $('submit-report-btn'),
   urlInput: $('report-url'),
@@ -1870,29 +2160,51 @@ const els = {
   areaOptions: $('area-options'),
   urlError: $('report-url-error'),
   pasteBtn: $('paste-btn'),
+  authDialog: $('auth-dialog'),
+  authForm: $('auth-form'),
+  authTitle: $('auth-title'),
+  authIntro: $('auth-intro'),
+  authPasswordLabel: $('auth-password-label'),
+  authPassword: $('auth-password'),
+  authConfirmField: $('auth-confirm-field'),
+  authConfirm: $('auth-confirm'),
+  authError: $('auth-error'),
+  authSubmit: $('auth-submit'),
+  togglePassword: $('toggle-password'),
   toast: $('toast'),
 };
 
 /* ---------- Estado ---------- */
-let state = { reports: [], activeId: null };
-let route = { view: 'home', area: null };
-const lastByArea = new Map();
-let published = { reports: [] };
+let published = { reports: [], admin: null, updatedAt: null, error: false };
+let state = { reports: [], admin: null };
+let activeId = null;
+let route = { view: 'home', area: null, reportId: null };
+let isAdmin = false;
 let dirty = false;
-let dialogMode = 'create';
+let reportDialogMode = 'create';
+let authMode = 'login';
+let failedAttempts = 0;
+let lockedUntil = 0;
 let toastTimer = null;
 let storageWarningShown = false;
+const lastByArea = new Map();
 
 /* ---------- Utilidades ---------- */
 function createId() {
-  if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-    return window.crypto.randomUUID();
-  }
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
   return `r-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
 function cleanText(value, max) {
   return typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
+}
+
+function normalize(text) {
+  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
+function plural(n, one, many) {
+  return `${n} ${n === 1 ? one : many}`;
 }
 
 function showToast(message) {
@@ -1908,6 +2220,46 @@ function warnStorageBlocked() {
   showToast(MESSAGES.storageBlocked);
 }
 
+function svgIcon(paths, extraClass) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('class', extraClass ? `icon ${extraClass}` : 'icon');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  paths.forEach((d) => {
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', d);
+    svg.append(path);
+  });
+  return svg;
+}
+
+/* ---------- Ícones e cores por área ---------- */
+const AREA_ICONS = [
+  [/financ|contab|orcament|custo|receita|fiscal|tesour/, ['M12 2v20', 'M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6']],
+  [/comunic|marketing|imprensa|midia|mkt/, ['M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Z', 'M15.5 8.5a5 5 0 0 1 0 7', 'M18.5 5.5a9 9 0 0 1 0 13']],
+  [/evento|agenda|calend/, ['M8 2v4', 'M16 2v4', 'M3 10h18', 'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z']],
+  [/pessoa|rh|gente|colaborad|recursos humanos/, ['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2', 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'M22 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75']],
+  [/sustent|social|cooperat|ambient|esg|recicl|maos/, ['M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z', 'M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12']],
+  [/regulat|tecnic|anvisa|norma|jurid|legal/, ['M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6Z', 'm9 12 2 2 4-4']],
+  [/associad|comercial|vendas|mercado|export/, ['M3 3v18h18', 'm7 14 4-4 3 3 6-6']],
+  [/projeto|pmo|gestao|operac|process/, ['M9 11l3 3L22 4', 'M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11']],
+];
+const DEFAULT_ICON = ['M3 3v18h18', 'M7 15l4-4 3 3 5-6'];
+const AREA_COLORS = ['var(--blue-700)', 'var(--coral)', 'var(--blue-500)', 'var(--navy-800)', 'var(--coral-deep)'];
+
+function iconForArea(area) {
+  const key = normalize(area);
+  const found = AREA_ICONS.find(([re]) => re.test(key));
+  return found ? found[1] : DEFAULT_ICON;
+}
+
+function colorForArea(area) {
+  const index = getAreas().indexOf(area);
+  return AREA_COLORS[(index < 0 ? 0 : index) % AREA_COLORS.length];
+}
+
 /* ---------- Validação ---------- */
 function extractIframeSrc(raw) {
   const doc = new DOMParser().parseFromString(raw, 'text/html');
@@ -1918,27 +2270,22 @@ function extractIframeSrc(raw) {
 function validateEmbedUrl(rawValue) {
   let value = (rawValue || '').trim();
   if (!value) return { ok: false, error: MESSAGES.empty };
-
   if (/<iframe[\s>]/i.test(value)) {
     value = extractIframeSrc(value);
     if (!value) return { ok: false, error: MESSAGES.malformed };
   }
-
   let parsed;
   try {
     parsed = new URL(value);
   } catch {
     return { ok: false, error: MESSAGES.malformed };
   }
-
   const host = parsed.hostname.toLowerCase();
   const validHost = host === 'app.powerbi.com' || host.endsWith('.powerbi.com');
   if (parsed.protocol !== 'https:' || !validHost || parsed.username || parsed.password || parsed.port) {
     return { ok: false, error: MESSAGES.domain };
   }
-  if (!/reportembed|\/view/i.test(parsed.pathname)) {
-    return { ok: false, error: MESSAGES.path };
-  }
+  if (!/reportembed|\/view/i.test(parsed.pathname)) return { ok: false, error: MESSAGES.path };
   return { ok: true, url: parsed.href };
 }
 
@@ -1953,7 +2300,7 @@ function sanitizeReports(list) {
       console.error(`Relatório ${index + 1} ignorado: ${check.error}`);
       return;
     }
-    let id = cleanText(item.id, 80) || createId();
+    let id = cleanText(item.id, 80).replace(/[^\w-]/g, '') || createId();
     if (seen.has(id)) id = createId();
     seen.add(id);
     result.push({
@@ -1966,32 +2313,76 @@ function sanitizeReports(list) {
   return result;
 }
 
-/* ---------- Dados publicados ---------- */
+function sanitizeAdmin(cfg) {
+  if (!cfg || typeof cfg !== 'object') return null;
+  const iterations = Number(cfg.iterations);
+  const b64 = /^[A-Za-z0-9+/]+={0,2}$/;
+  if (
+    typeof cfg.salt !== 'string' ||
+    typeof cfg.hash !== 'string' ||
+    !b64.test(cfg.salt) ||
+    !b64.test(cfg.hash) ||
+    !Number.isInteger(iterations) ||
+    iterations < 10000 ||
+    iterations > 5000000
+  ) {
+    return null;
+  }
+  return { salt: cfg.salt, hash: cfg.hash, iterations };
+}
+
+/* ---------- Senha (PBKDF2 / SHA-256) ---------- */
+const toB64 = (buffer) => btoa(String.fromCharCode(...new Uint8Array(buffer)));
+const fromB64 = (text) => Uint8Array.from(atob(text), (c) => c.charCodeAt(0));
+
+function cryptoAvailable() {
+  return Boolean(window.crypto && window.crypto.subtle);
+}
+
+async function deriveHash(password, salt, iterations) {
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, 256);
+  return toB64(bits);
+}
+
+async function createAdminConfig(password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  return { salt: toB64(salt), iterations: PBKDF2_ITERATIONS, hash: await deriveHash(password, salt, PBKDF2_ITERATIONS) };
+}
+
+async function passwordMatches(password, cfg) {
+  const hash = await deriveHash(password, fromB64(cfg.salt), cfg.iterations);
+  if (hash.length !== cfg.hash.length) return false;
+  let diff = 0;
+  for (let i = 0; i < hash.length; i += 1) diff |= hash.charCodeAt(i) ^ cfg.hash.charCodeAt(i);
+  return diff === 0;
+}
+
+/* ---------- Dados publicados e rascunho ---------- */
 async function loadPublished() {
   try {
     const response = await fetch(PUBLISHED_FILE, { cache: 'no-store' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    return { reports: sanitizeReports(data && data.reports), error: false };
+    const updatedAt = data && typeof data.updatedAt === 'string' && !Number.isNaN(Date.parse(data.updatedAt)) ? data.updatedAt : null;
+    return { reports: sanitizeReports(data && data.reports), admin: sanitizeAdmin(data && data.admin), updatedAt, error: false };
   } catch (error) {
     console.error('Não foi possível carregar relatorios.json.', error);
-    return { reports: [], error: true };
+    return { reports: [], admin: null, updatedAt: null, error: true };
   }
 }
 
-/* ---------- Rascunho da administradora ---------- */
 function readDraft() {
   try {
     const raw = window.localStorage.getItem(DRAFT_KEY);
     if (raw !== null) {
       const data = JSON.parse(raw);
-      return { reports: sanitizeReports(data && data.reports), activeId: data && data.activeId };
+      return { reports: sanitizeReports(data && data.reports), admin: sanitizeAdmin(data && data.admin) };
     }
     const legacy = window.localStorage.getItem(LEGACY_STORAGE_KEY);
     if (legacy !== null) {
       window.localStorage.removeItem(LEGACY_STORAGE_KEY);
-      const old = JSON.parse(legacy);
-      return { reports: sanitizeReports([old]), activeId: null };
+      return { reports: sanitizeReports([JSON.parse(legacy)]), admin: null };
     }
   } catch (error) {
     console.error('Não foi possível ler o rascunho salvo no navegador.', error);
@@ -2000,7 +2391,6 @@ function readDraft() {
 }
 
 function saveDraft() {
-  if (!IS_ADMIN) return;
   try {
     window.localStorage.setItem(DRAFT_KEY, JSON.stringify(state));
   } catch (error) {
@@ -2017,18 +2407,29 @@ function clearDraft() {
   }
 }
 
-function serialize(reports) {
-  return JSON.stringify(
-    { reports: reports.map(({ id, name, area, url }) => ({ id, name, area, url })) },
-    null,
-    2,
-  );
+function payload(data) {
+  return {
+    admin: data.admin || undefined,
+    reports: data.reports.map(({ id, name, area, url }) => ({ id, name, area, url })),
+  };
 }
 
 function updateDirty() {
-  dirty = serialize(state.reports) !== serialize(published.reports);
+  dirty = isAdmin && JSON.stringify(payload(state)) !== JSON.stringify(payload(published));
   els.dirtyDot.hidden = !dirty;
   els.discardBtn.hidden = !dirty;
+  els.adminStatusDot.classList.toggle('is-dirty', dirty);
+  els.adminStatusText.replaceChildren();
+  const strong = document.createElement('strong');
+  strong.textContent = 'Modo administradora. ';
+  els.adminStatusText.append(
+    strong,
+    document.createTextNode(
+      dirty
+        ? 'Há alterações não publicadas. Baixe o relatorios.json e envie ao GitHub.'
+        : 'Tudo publicado.',
+    ),
+  );
 }
 
 function markChanged() {
@@ -2036,7 +2437,76 @@ function markChanged() {
   updateDirty();
 }
 
-/* ---------- Áreas ---------- */
+/* ---------- Sessão ADM ---------- */
+function readSession() {
+  try {
+    return window.sessionStorage.getItem(SESSION_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function writeSession(on) {
+  try {
+    if (on) window.sessionStorage.setItem(SESSION_KEY, '1');
+    else window.sessionStorage.removeItem(SESSION_KEY);
+  } catch (error) {
+    console.error('Não foi possível registrar a sessão ADM.', error);
+  }
+}
+
+function enterAdmin() {
+  isAdmin = true;
+  writeSession(true);
+  const draft = readDraft();
+  state = draft
+    ? { reports: draft.reports, admin: draft.admin || published.admin }
+    : { reports: published.reports.map((r) => ({ ...r })), admin: published.admin };
+  updateDirty();
+  render();
+}
+
+function leaveAdmin() {
+  isAdmin = false;
+  writeSession(false);
+  state = { reports: published.reports.map((r) => ({ ...r })), admin: published.admin };
+  updateDirty();
+  render();
+  showToast(MESSAGES.loggedOut);
+}
+
+function knownAdminConfig() {
+  if (published.admin) return published.admin;
+  const draft = readDraft();
+  return draft && draft.admin ? draft.admin : null;
+}
+
+/* ---------- Navegação: #/  #/area/Nome  #/area/Nome/id ---------- */
+function parseRoute() {
+  const match = window.location.hash.match(/^#\/area\/([^/]+)(?:\/([^/]+))?\/?$/);
+  if (!match) return { view: 'home', area: null, reportId: null };
+  try {
+    return { view: 'area', area: decodeURIComponent(match[1]), reportId: match[2] ? decodeURIComponent(match[2]) : null };
+  } catch {
+    return { view: 'home', area: null, reportId: null };
+  }
+}
+
+function hrefFor(area, reportId) {
+  if (!area) return '#/';
+  return reportId ? `#/area/${encodeURIComponent(area)}/${encodeURIComponent(reportId)}` : `#/area/${encodeURIComponent(area)}`;
+}
+
+function navigate(hash, { replace = false } = {}) {
+  if (window.location.hash === hash || replace) {
+    history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
+    route = parseRoute();
+    render();
+  } else {
+    window.location.hash = hash;
+  }
+}
+
 function getAreas() {
   const areas = [];
   state.reports.forEach((r) => {
@@ -2046,115 +2516,22 @@ function getAreas() {
 }
 
 function getActiveReport() {
-  return state.reports.find((r) => r.id === state.activeId) || null;
+  return state.reports.find((r) => r.id === activeId) || null;
 }
 
-/* ---------- Navegação (#/ e #/area/Nome) ---------- */
-function parseRoute() {
-  const match = window.location.hash.match(/^#\/area\/(.+)$/);
-  if (!match) return { view: 'home', area: null };
-  try {
-    return { view: 'area', area: decodeURIComponent(match[1]) };
-  } catch {
-    return { view: 'home', area: null };
-  }
-}
-
-function areaHref(area) {
-  return `#/area/${encodeURIComponent(area)}`;
-}
-
-function goTo(area) {
-  const target = area ? areaHref(area) : '#/';
-  if (window.location.hash === target) {
-    route = parseRoute();
-    render();
-  } else {
-    window.location.hash = target;
-  }
-}
-
-function syncActiveWithRoute() {
-  if (route.view !== 'area') return;
+function resolveAreaRoute() {
   const inArea = state.reports.filter((r) => r.area === route.area);
   if (inArea.length === 0) {
-    route = { view: 'home', area: null };
-    if (window.location.hash) history.replaceState(null, '', window.location.pathname + window.location.search + '#/');
-    return;
+    route = { view: 'home', area: null, reportId: null };
+    history.replaceState(null, '', `${window.location.pathname}${window.location.search}#/`);
+    return false;
   }
-  const current = getActiveReport();
-  if (current && current.area === route.area) return;
-  const remembered = lastByArea.get(route.area);
-  state.activeId = inArea.some((r) => r.id === remembered) ? remembered : inArea[0].id;
+  const wanted = route.reportId || lastByArea.get(route.area) || activeId;
+  activeId = inArea.some((r) => r.id === wanted) ? wanted : inArea[0].id;
+  return true;
 }
 
-/* ---------- Página inicial ---------- */
-const AREA_ICON =
-  'M3 3v18h18|M7 15l4-4 3 3 5-6';
-
-function makeIcon(paths) {
-  const ns = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(ns, 'svg');
-  svg.setAttribute('class', 'icon');
-  svg.setAttribute('viewBox', '0 0 24 24');
-  svg.setAttribute('aria-hidden', 'true');
-  svg.setAttribute('focusable', 'false');
-  paths.split('|').forEach((d) => {
-    const path = document.createElementNS(ns, 'path');
-    path.setAttribute('d', d);
-    svg.append(path);
-  });
-  return svg;
-}
-
-function renderHome() {
-  els.areaCards.replaceChildren();
-  getAreas().forEach((area) => {
-    const reports = state.reports.filter((r) => r.area === area);
-    const item = document.createElement('li');
-    const card = document.createElement('a');
-    card.className = 'area-card';
-    card.href = areaHref(area);
-
-    const top = document.createElement('div');
-    top.className = 'area-card-top';
-    const icon = document.createElement('span');
-    icon.className = 'area-card-icon';
-    icon.append(makeIcon(AREA_ICON));
-    const arrow = makeIcon('M5 12h14|m13 6 6 6-6 6');
-    arrow.classList.add('area-card-arrow');
-    top.append(icon, arrow);
-
-    const textWrap = document.createElement('div');
-    const name = document.createElement('p');
-    name.className = 'area-card-name';
-    name.textContent = area;
-    const count = document.createElement('p');
-    count.className = 'area-card-count';
-    count.textContent = `${reports.length} relatório${reports.length > 1 ? 's' : ''}`;
-    textWrap.append(name, count);
-
-    const list = document.createElement('ul');
-    list.className = 'area-card-list';
-    reports.slice(0, 3).forEach((r) => {
-      const li = document.createElement('li');
-      li.textContent = r.name;
-      list.append(li);
-    });
-    if (reports.length > 3) {
-      const li = document.createElement('li');
-      li.className = 'more';
-      li.textContent = `+ ${reports.length - 3} outro${reports.length - 3 > 1 ? 's' : ''}`;
-      list.append(li);
-    }
-
-    card.append(top, textWrap, list);
-    item.append(card);
-    els.areaCards.append(item);
-  });
-}
-
-/* ---------- Renderização ---------- */
+/* ---------- Iframe ---------- */
 function handleIframeLoad(event) {
   const frame = event.currentTarget;
   if (frame !== els.iframe || !frame.getAttribute('src')) return;
@@ -2162,8 +2539,7 @@ function handleIframeLoad(event) {
   frame.classList.remove('is-loading');
 }
 
-/* Troca o iframe por um novo para não criar entradas no histórico do
-   navegador (assim o botão "Voltar" volta de página, não de relatório). */
+/* Troca o iframe por um novo para não criar entradas no histórico do navegador. */
 function loadIframe(url, force = false) {
   const check = validateEmbedUrl(url);
   if (!check.ok) return;
@@ -2181,139 +2557,250 @@ function loadIframe(url, force = false) {
   els.iframe = frame;
 }
 
-function renderAreas(active) {
-  const areas = getAreas();
-  document.body.classList.add('has-areas');
-  els.areas.replaceChildren();
-
-  areas.forEach((area) => {
-    const count = state.reports.filter((r) => r.area === area).length;
-    const chip = document.createElement('a');
-    chip.href = areaHref(area);
-    chip.className = 'area-chip';
-    chip.dataset.area = area;
-    chip.setAttribute('aria-current', String(area === active.area));
-    chip.append(document.createTextNode(area));
-    const badge = document.createElement('span');
-    badge.className = 'area-count';
-    badge.textContent = String(count);
-    badge.setAttribute('aria-label', `${count} relatório${count > 1 ? 's' : ''}`);
-    chip.append(badge);
-    els.areas.append(chip);
-  });
+/* ---------- Renderização ---------- */
+function formatDate(iso) {
+  try {
+    return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(iso));
+  } catch {
+    return '';
+  }
 }
 
-function renderTabs(active) {
-  els.tabs.replaceChildren();
-  state.reports
-    .filter((r) => r.area === active.area)
-    .forEach((report) => {
-      const isActive = report.id === active.id;
-      const tab = document.createElement('button');
-      tab.type = 'button';
-      tab.className = 'tab';
-      tab.id = `tab-${report.id}`;
-      tab.setAttribute('role', 'tab');
-      tab.setAttribute('aria-selected', String(isActive));
-      tab.setAttribute('aria-controls', 'report-panel');
-      tab.tabIndex = isActive ? 0 : -1;
-      tab.dataset.id = report.id;
-      tab.textContent = report.name;
-      tab.title = report.name;
-      els.tabs.append(tab);
-    });
+function renderStats() {
+  els.heroStats.replaceChildren();
+  const items = [];
+  if (state.reports.length) {
+    items.push([String(getAreas().length), getAreas().length === 1 ? 'área' : 'áreas']);
+    items.push([String(state.reports.length), state.reports.length === 1 ? 'relatório' : 'relatórios']);
+  }
+  if (published.updatedAt && !dirty) items.push([formatDate(published.updatedAt), 'última atualização']);
+  items.forEach(([value, label]) => {
+    const li = document.createElement('li');
+    const strong = document.createElement('strong');
+    strong.textContent = value;
+    const span = document.createElement('span');
+    span.textContent = label;
+    li.append(strong, span);
+    els.heroStats.append(li);
+  });
+  els.heroStats.hidden = items.length === 0;
+}
 
+function highlight(text, term) {
+  const fragment = document.createDocumentFragment();
+  if (!term) {
+    fragment.append(document.createTextNode(text));
+    return fragment;
+  }
+  const index = normalize(text).indexOf(term);
+  if (index === -1) {
+    fragment.append(document.createTextNode(text));
+    return fragment;
+  }
+  const mark = document.createElement('mark');
+  mark.textContent = text.slice(index, index + term.length);
+  fragment.append(document.createTextNode(text.slice(0, index)), mark, document.createTextNode(text.slice(index + term.length)));
+  return fragment;
+}
+
+function renderHome() {
+  renderStats();
+  const term = normalize(els.searchInput.value.trim());
+  els.areaCards.replaceChildren();
+
+  if (state.reports.length === 0) {
+    els.homeNotice.hidden = false;
+    els.homeNotice.textContent = published.error && !isAdmin ? MESSAGES.loadError : isAdmin ? MESSAGES.adminEmpty : MESSAGES.noReports;
+    els.searchForm.hidden = true;
+    els.searchSummary.textContent = '';
+    return;
+  }
+  els.searchForm.hidden = false;
+  els.homeNotice.hidden = true;
+
+  let shownReports = 0;
+  let shownAreas = 0;
+  getAreas().forEach((area) => {
+    const all = state.reports.filter((r) => r.area === area);
+    const areaMatches = !term || normalize(area).includes(term);
+    const reports = areaMatches ? all : all.filter((r) => normalize(r.name).includes(term));
+    if (reports.length === 0) return;
+    shownAreas += 1;
+    shownReports += reports.length;
+
+    const item = document.createElement('li');
+    const card = document.createElement('article');
+    card.className = 'area-card';
+    card.style.setProperty('--area-color', colorForArea(area));
+    card.style.setProperty('--i', String(shownAreas - 1));
+
+    const head = document.createElement('a');
+    head.className = 'area-card-head';
+    head.href = hrefFor(area);
+    const icon = document.createElement('span');
+    icon.className = 'area-icon';
+    icon.append(svgIcon(iconForArea(area)));
+    const titles = document.createElement('span');
+    titles.className = 'area-card-titles';
+    const name = document.createElement('span');
+    name.className = 'area-card-name';
+    name.append(highlight(area, term));
+    const count = document.createElement('span');
+    count.className = 'area-card-count';
+    count.textContent = plural(all.length, 'relatório', 'relatórios');
+    titles.append(name, document.createElement('br'), count);
+    head.append(icon, titles, svgIcon(['M5 12h14', 'm13 6 6 6-6 6'], 'area-card-arrow'));
+
+    const list = document.createElement('ul');
+    list.className = 'area-card-list';
+    const limit = term ? reports.length : CARD_PREVIEW;
+    reports.slice(0, limit).forEach((r) => {
+      const li = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = hrefFor(area, r.id);
+      const label = document.createElement('span');
+      label.append(highlight(r.name, term));
+      link.append(label);
+      li.append(link);
+      list.append(li);
+    });
+    if (reports.length > limit) {
+      const more = document.createElement('li');
+      more.className = 'area-card-more';
+      more.textContent = `+ ${plural(reports.length - limit, 'outro', 'outros')}`;
+      list.append(more);
+    }
+
+    card.append(head, list);
+    item.append(card);
+    els.areaCards.append(item);
+  });
+
+  if (term && shownAreas === 0) {
+    els.homeNotice.hidden = false;
+    els.homeNotice.textContent = `Nenhum relatório encontrado para “${els.searchInput.value.trim()}”.`;
+  }
+  els.searchSummary.textContent = term
+    ? `${plural(shownReports, 'relatório encontrado', 'relatórios encontrados')}`
+    : '';
+}
+
+function renderArea() {
+  const active = getActiveReport();
+  const area = active.area;
+  const inArea = state.reports.filter((r) => r.area === area);
+  lastByArea.set(area, active.id);
+
+  els.crumbArea.textContent = area;
+  els.areaTitle.textContent = area;
+  els.areaMeta.textContent = plural(inArea.length, 'relatório', 'relatórios');
+  els.areaHeroIcon.replaceChildren(svgIcon(iconForArea(area)));
+
+  els.areaChips.replaceChildren();
+  getAreas().forEach((name) => {
+    const chip = document.createElement('a');
+    chip.className = 'area-chip';
+    chip.href = hrefFor(name);
+    if (name === area) chip.setAttribute('aria-current', 'page');
+    chip.append(document.createTextNode(name));
+    const count = document.createElement('span');
+    count.className = 'area-chip-count';
+    count.textContent = String(state.reports.filter((r) => r.area === name).length);
+    chip.append(count);
+    els.areaChips.append(chip);
+  });
+  const currentChip = els.areaChips.querySelector('[aria-current]');
+  if (currentChip) currentChip.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+
+  els.tabs.replaceChildren();
+  inArea.forEach((report) => {
+    const selected = report.id === active.id;
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = 'tab';
+    tab.id = `tab-${report.id}`;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-selected', String(selected));
+    tab.setAttribute('aria-controls', 'report-panel');
+    tab.tabIndex = selected ? 0 : -1;
+    tab.dataset.id = report.id;
+    tab.textContent = report.name;
+    tab.title = report.name;
+    els.tabs.append(tab);
+  });
   const activeTab = els.tabs.querySelector('[aria-selected="true"]');
   if (activeTab) {
     activeTab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     els.frame.setAttribute('aria-labelledby', activeTab.id);
   }
-}
 
-function renderAreaOptions() {
-  els.areaOptions.replaceChildren();
-  getAreas().forEach((area) => {
-    const option = document.createElement('option');
-    option.value = area;
-    els.areaOptions.append(option);
-  });
+  els.reportName.textContent = active.name;
+  els.iframe.title = active.name;
+  els.openPbiLink.href = active.url;
+  document.title = `${active.name} · ${area} | Indicadores ABIHPEC`;
+  loadIframe(active.url);
 }
 
 function render() {
   const hasReports = state.reports.length > 0;
-  syncActiveWithRoute();
-  const onHome = hasReports && route.view === 'home';
-  const onArea = hasReports && route.view === 'area';
+  let onArea = hasReports && route.view === 'area';
+  if (onArea) onArea = resolveAreaRoute();
 
-  els.emptyState.hidden = hasReports;
-  els.homeView.hidden = !onHome;
-  els.reportsView.hidden = !onArea;
-  els.addBtn.hidden = !IS_ADMIN;
-  els.publishBtn.hidden = !IS_ADMIN;
-  els.editBtn.hidden = !IS_ADMIN || !onArea;
-  document.body.classList.toggle('has-reports', onArea);
+  els.admLoginBtn.hidden = isAdmin;
+  els.admBadge.hidden = !isAdmin;
+  els.adminBar.hidden = !isAdmin;
+  els.editBtn.hidden = !isAdmin || !onArea;
+  els.homeView.hidden = onArea;
+  els.areaView.hidden = !onArea;
   document.body.classList.toggle('on-home', !onArea);
 
-  if (!hasReports) {
-    els.iframe.removeAttribute('src');
-    els.tabs.replaceChildren();
-    els.areas.replaceChildren();
-    document.title = 'Portal de Indicadores | ABIHPEC';
-    return;
-  }
-
-  if (onHome) {
-    renderHome();
+  if (onArea) {
+    renderArea();
+  } else {
     document.title = 'Indicadores ABIHPEC';
+    renderHome();
+  }
+}
+
+/* ---------- Painel de relatório ---------- */
+function openPanel(dialog) {
+  dialog.classList.remove('is-closing');
+  dialog.showModal();
+}
+
+function closePanel(dialog) {
+  if (!dialog.open) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    dialog.close();
     return;
   }
-
-  const active = getActiveReport();
-  lastByArea.set(active.area, active.id);
-  renderAreas(active);
-  renderTabs(active);
-  els.reportName.textContent = active.name;
-  els.reportAreaLabel.textContent = active.area.toUpperCase();
-  els.iframe.title = active.name;
-  document.title = `${active.area} | Indicadores ABIHPEC`;
-  loadIframe(active.url);
+  dialog.classList.add('is-closing');
+  window.setTimeout(() => {
+    dialog.classList.remove('is-closing');
+    dialog.close();
+  }, 180);
 }
 
-function setActive(id, focusTab = false) {
-  if (!state.reports.some((r) => r.id === id)) return;
-  if (id !== state.activeId) {
-    state.activeId = id;
-    saveDraft();
-    render();
-  }
-  if (focusTab) {
-    const tab = document.getElementById(`tab-${id}`);
-    if (tab) tab.focus();
-  }
-}
-
-function navigateToReport(report) {
-  state.activeId = report.id;
-  lastByArea.set(report.area, report.id);
-  goTo(report.area);
-}
-
-/* ---------- Painel (somente administradora) ---------- */
 function setUrlError(message) {
   els.urlError.textContent = message;
   if (message) els.urlInput.setAttribute('aria-invalid', 'true');
   else els.urlInput.removeAttribute('aria-invalid');
 }
 
-function openDialog(mode) {
-  if (!IS_ADMIN) return;
-  dialogMode = mode;
+function openReportDialog(mode) {
+  if (!isAdmin) return;
+  reportDialogMode = mode;
   setUrlError('');
-  els.form.reset();
-  renderAreaOptions();
+  els.reportForm.reset();
+  els.areaOptions.replaceChildren();
+  getAreas().forEach((area) => {
+    const option = document.createElement('option');
+    option.value = area;
+    els.areaOptions.append(option);
+  });
 
+  const active = route.view === 'area' ? getActiveReport() : null;
   if (mode === 'edit') {
-    const active = getActiveReport();
     if (!active) return;
     els.dialogTitle.textContent = 'Editar relatório';
     els.submitBtn.textContent = 'Salvar alterações';
@@ -2322,32 +2809,16 @@ function openDialog(mode) {
     els.nameInput.value = active.name;
     els.areaInput.value = active.area;
   } else {
-    const active = getActiveReport();
     els.dialogTitle.textContent = 'Adicionar relatório';
     els.submitBtn.textContent = 'Adicionar e abrir';
     els.removeBtn.hidden = true;
     if (active) els.areaInput.value = active.area;
   }
-
-  els.dialog.classList.remove('is-closing');
-  els.dialog.showModal();
+  openPanel(els.reportDialog);
   els.urlInput.focus();
 }
 
-function closeDialog() {
-  if (!els.dialog.open) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    els.dialog.close();
-    return;
-  }
-  els.dialog.classList.add('is-closing');
-  window.setTimeout(() => {
-    els.dialog.classList.remove('is-closing');
-    els.dialog.close();
-  }, 180);
-}
-
-function handleSubmit(event) {
+function handleReportSubmit(event) {
   event.preventDefault();
   const check = validateEmbedUrl(els.urlInput.value);
   if (!check.ok) {
@@ -2359,59 +2830,52 @@ function handleSubmit(event) {
   const typedName = cleanText(els.nameInput.value, 70);
   const area = cleanText(els.areaInput.value, 40) || DEFAULT_AREA;
 
-  if (dialogMode === 'edit') {
+  if (reportDialogMode === 'edit') {
     const active = getActiveReport();
     if (!active) return;
+    const sameArea = active.area === area;
     active.url = check.url;
     active.name = typedName || active.name;
     active.area = area;
     markChanged();
-    closeDialog();
-    navigateToReport(active);
+    closePanel(els.reportDialog);
+    activeId = active.id;
+    navigate(hrefFor(area, active.id), { replace: sameArea });
     loadIframe(active.url, true);
     showToast(MESSAGES.updated);
     return;
   }
 
-  const report = {
-    id: createId(),
-    url: check.url,
-    name: typedName || `Relatório ${state.reports.length + 1}`,
-    area,
-  };
+  const report = { id: createId(), url: check.url, name: typedName || `Relatório ${state.reports.length + 1}`, area };
   state.reports.push(report);
-  state.activeId = report.id;
+  activeId = report.id;
   markChanged();
-  closeDialog();
-  navigateToReport(report);
+  closePanel(els.reportDialog);
+  navigate(hrefFor(area, report.id));
   showToast(MESSAGES.added);
 }
 
 function handleRemove() {
-  const index = state.reports.findIndex((r) => r.id === state.activeId);
+  const index = state.reports.findIndex((r) => r.id === activeId);
   if (index === -1) return;
-  const area = state.reports[index].area;
+  const { area } = state.reports[index];
   state.reports.splice(index, 1);
-
-  const sameArea = state.reports.filter((r) => r.area === area);
-  const after = state.reports.slice(index).find((r) => r.area === area);
-  const next = after || sameArea[sameArea.length - 1];
-  state.activeId = next ? next.id : null;
   lastByArea.delete(area);
 
+  const after = state.reports.slice(index).find((r) => r.area === area);
+  const sameArea = state.reports.filter((r) => r.area === area);
+  const next = after || sameArea[sameArea.length - 1];
+  activeId = next ? next.id : null;
+
   markChanged();
-  closeDialog();
-  if (next) render();
-  else goTo(null);
+  closePanel(els.reportDialog);
+  navigate(next ? hrefFor(area, next.id) : '#/', { replace: true });
   showToast(MESSAGES.removed);
-  if (state.reports.length === 0) els.addBtn.focus();
 }
 
 async function handlePaste() {
   try {
-    if (!navigator.clipboard || typeof navigator.clipboard.readText !== 'function') {
-      throw new Error('Clipboard API indisponível');
-    }
+    if (!navigator.clipboard || typeof navigator.clipboard.readText !== 'function') throw new Error('Clipboard API indisponível');
     els.urlInput.value = (await navigator.clipboard.readText()).trim();
     setUrlError('');
     els.urlInput.focus();
@@ -2421,8 +2885,136 @@ async function handlePaste() {
   }
 }
 
+/* ---------- Painel de acesso / senha ---------- */
+function setAuthError(message) {
+  els.authError.textContent = message;
+  [els.authPassword, els.authConfirm].forEach((input) => {
+    if (message) input.setAttribute('aria-invalid', 'true');
+    else input.removeAttribute('aria-invalid');
+  });
+}
+
+function openAuthDialog(mode) {
+  authMode = mode;
+  els.authForm.reset();
+  setAuthError('');
+  els.authPassword.type = 'password';
+  els.authConfirm.type = 'password';
+  els.togglePassword.textContent = 'Mostrar';
+  els.togglePassword.setAttribute('aria-pressed', 'false');
+
+  const texts = {
+    login: ['Acesso ADM', 'Digite a senha de administradora para gerenciar os relatórios do portal.', 'Senha', 'Entrar', 'current-password'],
+    create: [
+      'Criar senha de ADM',
+      'Ainda não existe senha de administradora. Crie uma agora: ela passa a valer para todos depois que você enviar o relatorios.json ao GitHub.',
+      'Nova senha',
+      'Criar senha e entrar',
+      'new-password',
+    ],
+    change: [
+      'Trocar senha',
+      'Defina a nova senha de administradora. Ela passa a valer depois que você enviar o relatorios.json ao GitHub.',
+      'Nova senha',
+      'Salvar nova senha',
+      'new-password',
+    ],
+  }[mode];
+
+  [els.authTitle.textContent, els.authIntro.textContent, els.authPasswordLabel.textContent, els.authSubmit.textContent] = texts;
+  els.authPassword.setAttribute('autocomplete', texts[4]);
+  els.authConfirmField.hidden = mode === 'login';
+  openPanel(els.authDialog);
+  els.authPassword.focus();
+}
+
+async function handleAuthSubmit(event) {
+  event.preventDefault();
+  if (!cryptoAvailable()) {
+    setAuthError(MESSAGES.noCrypto);
+    return;
+  }
+  const password = els.authPassword.value;
+
+  if (authMode === 'login') {
+    const now = Date.now();
+    if (now < lockedUntil) {
+      setAuthError(MESSAGES.locked(Math.ceil((lockedUntil - now) / 1000)));
+      return;
+    }
+    const cfg = knownAdminConfig();
+    if (!cfg) {
+      openAuthDialog('create');
+      return;
+    }
+    els.authSubmit.disabled = true;
+    let ok = false;
+    try {
+      ok = password.length > 0 && (await passwordMatches(password, cfg));
+    } catch (error) {
+      console.error('Falha ao verificar a senha.', error);
+    }
+    els.authSubmit.disabled = false;
+    if (!ok) {
+      failedAttempts += 1;
+      if (failedAttempts >= MAX_ATTEMPTS) {
+        failedAttempts = 0;
+        lockedUntil = Date.now() + LOCK_SECONDS * 1000;
+        setAuthError(MESSAGES.locked(LOCK_SECONDS));
+      } else {
+        setAuthError(MESSAGES.wrongPassword);
+      }
+      els.authPassword.select();
+      return;
+    }
+    failedAttempts = 0;
+    closePanel(els.authDialog);
+    enterAdmin();
+    showToast(MESSAGES.welcome);
+    return;
+  }
+
+  if (password.length < MIN_PASSWORD) {
+    setAuthError(MESSAGES.shortPassword);
+    els.authPassword.focus();
+    return;
+  }
+  if (password !== els.authConfirm.value) {
+    setAuthError(MESSAGES.mismatch);
+    els.authConfirm.focus();
+    return;
+  }
+  els.authSubmit.disabled = true;
+  let cfg;
+  try {
+    cfg = await createAdminConfig(password);
+  } catch (error) {
+    console.error('Falha ao gerar a senha.', error);
+    els.authSubmit.disabled = false;
+    setAuthError(MESSAGES.noCrypto);
+    return;
+  }
+  els.authSubmit.disabled = false;
+  closePanel(els.authDialog);
+
+  if (authMode === 'create') {
+    enterAdmin();
+    state.admin = cfg;
+    markChanged();
+    render();
+    showToast(MESSAGES.created);
+  } else {
+    state.admin = cfg;
+    markChanged();
+    render();
+    showToast(MESSAGES.changed);
+  }
+}
+
+/* ---------- Publicar / descartar ---------- */
 function handleDownload() {
-  const blob = new Blob([serialize(state.reports) + '\n'], { type: 'application/json' });
+  const data = { updatedAt: new Date().toISOString(), ...payload(state) };
+  const blob = new Blob([`${JSON.stringify(data, null, 2)}\n`], { type: 'application/json' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = 'relatorios.json';
@@ -2434,15 +3026,15 @@ function handleDownload() {
 }
 
 function handleDiscard() {
-  state = { reports: published.reports.map((r) => ({ ...r })), activeId: null };
+  state = { reports: published.reports.map((r) => ({ ...r })), admin: published.admin };
   clearDraft();
-  updateDirty();
   lastByArea.clear();
-  goTo(null);
+  updateDirty();
+  navigate('#/', { replace: true });
   showToast(MESSAGES.discarded);
 }
 
-/* ---------- Teclado nas abas ---------- */
+/* ---------- Teclado ---------- */
 function handleTabKeydown(event) {
   const tabs = Array.from(els.tabs.querySelectorAll('[role="tab"]'));
   const current = tabs.indexOf(document.activeElement);
@@ -2454,39 +3046,75 @@ function handleTabKeydown(event) {
   else if (event.key === 'End') next = tabs.length - 1;
   if (next === null) return;
   event.preventDefault();
-  setActive(tabs[next].dataset.id, true);
+  selectTab(tabs[next].dataset.id);
+}
+
+function selectTab(id) {
+  const report = state.reports.find((r) => r.id === id);
+  if (!report) return;
+  activeId = id;
+  navigate(hrefFor(report.area, id), { replace: true });
+  const tab = document.getElementById(`tab-${id}`);
+  if (tab) tab.focus();
 }
 
 /* ---------- Eventos ---------- */
-els.addBtn.addEventListener('click', () => openDialog('create'));
-els.editBtn.addEventListener('click', () => openDialog('edit'));
+els.admLoginBtn.addEventListener('click', () => openAuthDialog(knownAdminConfig() ? 'login' : 'create'));
+els.logoutBtn.addEventListener('click', leaveAdmin);
+els.passwordBtn.addEventListener('click', () => openAuthDialog('change'));
+els.addBtn.addEventListener('click', () => openReportDialog('create'));
+els.editBtn.addEventListener('click', () => openReportDialog('edit'));
 els.publishBtn.addEventListener('click', handleDownload);
 els.discardBtn.addEventListener('click', handleDiscard);
-els.closeBtn.addEventListener('click', closeDialog);
-els.cancelBtn.addEventListener('click', closeDialog);
 els.removeBtn.addEventListener('click', handleRemove);
 els.pasteBtn.addEventListener('click', handlePaste);
-els.form.addEventListener('submit', handleSubmit);
+els.reportForm.addEventListener('submit', handleReportSubmit);
+els.authForm.addEventListener('submit', handleAuthSubmit);
 
-els.dialog.addEventListener('cancel', (event) => {
-  event.preventDefault();
-  closeDialog();
+els.togglePassword.addEventListener('click', () => {
+  const show = els.authPassword.type === 'password';
+  els.authPassword.type = show ? 'text' : 'password';
+  els.authConfirm.type = show ? 'text' : 'password';
+  els.togglePassword.textContent = show ? 'Ocultar' : 'Mostrar';
+  els.togglePassword.setAttribute('aria-pressed', String(show));
 });
-els.dialog.addEventListener('click', (event) => {
-  if (event.target === els.dialog) closeDialog();
+
+[els.reportDialog, els.authDialog].forEach((dialog) => {
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    closePanel(dialog);
+  });
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog || event.target.closest('[data-close]')) closePanel(dialog);
+  });
 });
+
 els.urlInput.addEventListener('input', () => {
   if (els.urlInput.hasAttribute('aria-invalid')) setUrlError('');
 });
+[els.authPassword, els.authConfirm].forEach((input) =>
+  input.addEventListener('input', () => {
+    if (input.hasAttribute('aria-invalid')) setAuthError('');
+  }),
+);
 
-window.addEventListener('hashchange', () => {
-  route = parseRoute();
-  render();
-  window.scrollTo(0, 0);
+els.searchForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const first = els.areaCards.querySelector('.area-card-list a, .area-card-head');
+  if (first) first.click();
 });
+els.searchInput.addEventListener('input', renderHome);
+document.addEventListener('keydown', (event) => {
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  if (event.key === '/' && !typing && !els.homeView.hidden && !document.querySelector('dialog[open]')) {
+    event.preventDefault();
+    els.searchInput.focus();
+  }
+});
+
 els.tabs.addEventListener('click', (event) => {
   const tab = event.target.closest('[role="tab"]');
-  if (tab) setActive(tab.dataset.id, true);
+  if (tab) selectTab(tab.dataset.id);
 });
 els.tabs.addEventListener('keydown', handleTabKeydown);
 
@@ -2497,31 +3125,37 @@ els.reloadBtn.addEventListener('click', () => {
   showToast(MESSAGES.reloaded);
 });
 
+if (document.fullscreenEnabled) {
+  els.fullscreenBtn.addEventListener('click', () => {
+    els.frame.requestFullscreen().catch((error) => console.error('Não foi possível abrir em tela cheia.', error));
+  });
+} else {
+  els.fullscreenBtn.hidden = true;
+}
+
 els.iframe.addEventListener('load', handleIframeLoad);
 
+window.addEventListener('hashchange', () => {
+  route = parseRoute();
+  render();
+  window.scrollTo(0, 0);
+});
+
 window.addEventListener('beforeunload', (event) => {
-  if (IS_ADMIN && dirty) event.preventDefault();
+  if (isAdmin && dirty) event.preventDefault();
 });
 
 /* ---------- Inicialização ---------- */
 async function init() {
-  const result = await loadPublished();
-  published = { reports: result.reports };
-
-  if (IS_ADMIN) {
-    els.adminBanner.hidden = false;
-    const draft = readDraft();
-    state = draft
-      ? { reports: draft.reports, activeId: draft.activeId }
-      : { reports: published.reports.map((r) => ({ ...r })), activeId: null };
-    els.emptyText.textContent = MESSAGES.adminEmpty;
-    updateDirty();
-  } else {
-    state = { reports: published.reports, activeId: null };
-    els.emptyText.textContent = result.error ? MESSAGES.loadError : MESSAGES.noReports;
-  }
+  published = await loadPublished();
+  state = { reports: published.reports.map((r) => ({ ...r })), admin: published.admin };
   route = parseRoute();
-  render();
+  if (readSession()) {
+    enterAdmin();
+  } else {
+    updateDirty();
+    render();
+  }
 }
 
 init();
