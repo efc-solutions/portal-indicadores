@@ -1,10 +1,46 @@
 {
+  "updatedAt": "2026-11-12T14:54:55.571Z",
+  "admin": {
+    "salt": "sAEI9rOhg+obnHroA/WC6w==",
+    "iterations": 210000,
+    "hash": "G78OTob5hCagiYEWhVpjiwFRHdvH61gKcR+LFej2zKo="
+  },
   "reports": [
     {
-      "id": "cooperativas-possiveis",
-      "name": "Cooperativas Possíveis",
-      "area": "Geral",
+      "id": "63ca4f47-4069-4f6d-8ac5-610ecf162186",
+      "name": "Painel Cooperativas",
+      "area": "Mãos pro Futuro",
       "url": "https://app.powerbi.com/reportEmbed?reportId=d9fd6450-d442-492a-a4f3-13b7d55add1f&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84"
+    },
+    {
+      "id": "db6ded55-0387-48a2-a8aa-9c604e1a28bd",
+      "name": "Status - Forms de Compras",
+      "area": "Administrativo",
+      "url": "https://app.powerbi.com/reportEmbed?reportId=f4914d9b-3124-43d7-89e1-662ce2dc30b7&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84"
+    },
+    {
+      "id": "3ff596ca-9e73-4f6e-b935-4f75297a2f4a",
+      "name": "Status - Forms de Reembolso",
+      "area": "Administrativo",
+      "url": "https://app.powerbi.com/reportEmbed?reportId=c7a44a98-b857-4d93-ad53-97750ef1ab8d&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84"
+    },
+    {
+      "id": "249915ab-b376-4ea8-8711-3119d1066f68",
+      "name": "Status - Forms de Viagens",
+      "area": "Administrativo",
+      "url": "https://app.powerbi.com/reportEmbed?reportId=6ff18644-cf2c-4954-9a7a-9e4542eddc24&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84"
+    },
+    {
+      "id": "0f004c80-c370-4c4d-8b9c-bc2911c0db2b",
+      "name": "Status - Compras",
+      "area": "Mãos pro Futuro",
+      "url": "https://app.powerbi.com/reportEmbed?reportId=e56fe1c1-0662-4fc8-acfb-11d94de21ca3&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84"
+    },
+    {
+      "id": "010dbd1b-f911-4933-b46c-53427d4baf60",
+      "name": "Panorama do Setor",
+      "area": "Gestão Estratégica",
+      "url": "https://app.powerbi.com/reportEmbed?reportId=4ec37eb3-6b06-49ea-9bcb-f6243777ecc6&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84"
     }
   ]
 }
