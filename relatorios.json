@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-18T13:34:27.212Z",
+  "updatedAt": "2026-11-18T13:39:56.669Z",
   "admin": {
     "salt": "sAEI9rOhg+obnHroA/WC6w==",
     "hash": "G78OTob5hCagiYEWhVpjiwFRHdvH61gKcR+LFej2zKo=",
@@ -45,7 +45,7 @@
     {
       "id": "1525c65d-1c85-4cd6-a698-2d3254840138",
       "name": "Painel Financeiro",
-      "area": "Finaneiro",
+      "area": "Financeiro",
       "url": "https://app.powerbi.com/reportEmbed?reportId=87826a3f-8b56-4060-a543-25c5737dcdc6&autoAuth=true&ctid=30ae13ae-2a15-4e61-a8f7-5a4e1000da84"
     }
   ]
